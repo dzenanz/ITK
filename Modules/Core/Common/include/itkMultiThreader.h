@@ -40,15 +40,12 @@ namespace itk
  * \brief A class for performing multithreaded execution
  *
  * Multithreader is a class that provides support for multithreaded
- * execution using pthread_create on any platform
- * supporting POSIX threads.  This class can be used to execute a single
+ * execution using Windows or POSIX threads.
+ * This class can be used to execute a single
  * method on multiple threads, or to specify a method per thread.
  *
  * \ingroup OSSystemObjects
  *
- * If ITK_USE_PTHREADS is defined, then
- * pthread_create() will be used to create multiple threads (on
- * a sun, for example).
  * \ingroup ITKCommon
  */
 
@@ -207,9 +204,9 @@ private:
    *  ITK_MAX_THREADS and greater than zero. */
   static ThreadIdType m_GlobalMaximumNumberOfThreads;
 
-  /** Global value to effect weather the threadpool implementation should
+  /** Global value to control weather the threadpool implementation should
    * be used.  This defaults to the environmental variable "ITK_USE_THREADPOOL"
-   * if set, else it default to false and new threads are spawned.
+   * if set, else it default to true.
    */
   static bool m_GlobalDefaultUseThreadPool;
 
@@ -220,9 +217,6 @@ private:
    *  initialized in the constructor of the first MultiThreader instantiation.
    */
   static ThreadIdType m_GlobalDefaultNumberOfThreads;
-
-  /**  Platform specific number of threads */
-  static ThreadIdType  GetGlobalDefaultNumberOfThreadsByPlatform();
 
   /** The number of threads to use.
    *  The m_NumberOfThreads must always be less than or equal to

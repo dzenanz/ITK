@@ -35,15 +35,6 @@
 
 namespace itk
 {
-ThreadIdType MultiThreader::GetGlobalDefaultNumberOfThreadsByPlatform()
-{
-  SYSTEM_INFO sysInfo;
-
-  GetSystemInfo(&sysInfo);
-  ThreadIdType num = sysInfo.dwNumberOfProcessors;
-  return num;
-}
-
 void MultiThreader::MultipleMethodExecute()
 {
   ThreadIdType threadCount;

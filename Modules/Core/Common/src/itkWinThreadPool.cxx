@@ -16,173 +16,99 @@
  *
  *=========================================================================*/
 #include "itkThreadPool.h"
+#include <utility>
 
 namespace itk
 {
-
+ThreadIdType
 ThreadPool
-::ThreadSemaphorePair
-::ThreadSemaphorePair(const ThreadProcessIdType & tph) :
-  m_ThreadProcessHandle(tph)
+::GetGlobalDefaultNumberOfThreadsByPlatform()
 {
+  SYSTEM_INFO sysInfo;
 
-  m_Semaphore = CreateSemaphore(
-    ITK_NULLPTR,     // default security attributes
-    0,        // initial count
-    1000, // maximum count
-    ITK_NULLPTR);    // unnamed semaphore
-  if (m_Semaphore == ITK_NULLPTR)
+  GetSystemInfo(&sysInfo);
+  ThreadIdType num = sysInfo.dwNumberOfProcessors;
+  return num;
+}
+
+ThreadPool::Semaphore
+ThreadPool
+::PlatformCreate()
+{
+  Semaphore semaphore = CreateSemaphore(ITK_NULLPTR, 0, 1000, ITK_NULLPTR);
+  if (semaphore == ITK_NULLPTR)
+    {
+    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
+    }
+  return semaphore;
+}
+
+void
+ThreadPool
+::PlatformWait(Semaphore &semaphore)
+{
+  DWORD dwWaitResult = WaitForSingleObject(semaphore, INFINITE);
+  if (dwWaitResult != WAIT_OBJECT_0)
     {
     itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
     }
 }
 
-
-int
+void
 ThreadPool
-::ThreadSemaphorePair
-::SemaphoreWait()
+::PlatformSignal(Semaphore &semaphore)
 {
-  DWORD dwWaitResult = WaitForSingleObject(m_Semaphore,       // handle to semaphore
-                                           INFINITE);
-  switch( dwWaitResult )
+  if (!ReleaseSemaphore(semaphore, 1, ITK_NULLPTR))
     {
-    // The thread got ownership of the mutex
-    case WAIT_OBJECT_0:
-      return 0; //success
-      break;
-    case WAIT_ABANDONED:
-      return -1;
-    case WAIT_FAILED:
-      return -1;
-    default:
-      return -1;
+    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
     }
 }
 
-int
+void
 ThreadPool
-::ThreadSemaphorePair::SemaphorePost()
+::PlatformDelete(Semaphore &semaphore)
 {
-  if(!ReleaseSemaphore(
-       m_Semaphore,   // handle to semaphore
-       1,               // increase count by one
-       ITK_NULLPTR))
+  if (!CloseHandle(semaphore))
     {
-    return -1;
+    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
     }
-  return 0;
 }
 
+bool
+ThreadPool
+::PlatformClose(ThreadProcessIdType &threadId)
+{
+  return CloseHandle(threadId);
+}
 
 void
 ThreadPool
 ::AddThread()
 {
-  m_ThreadCount++;
-  HANDLE newlyAddedThreadHandle;
-  ThreadProcessIdentifiers::WinThreadIdType  dwThreadId;
+  ThreadProcessIdType threadHandle;
+  ThreadIdType *id = new ThreadIdType;
+  *id = m_ThreadCount;
 
-  newlyAddedThreadHandle = CreateThread(
+  threadHandle = CreateThread(
     ITK_NULLPTR,
     0,
-    (LPTHREAD_START_ROUTINE) ThreadPool::ThreadExecute,     // thread function
-    this,
+    (LPTHREAD_START_ROUTINE) ThreadPool::ThreadExecute,
+    id,
     0,
-    &dwThreadId);
-  if( newlyAddedThreadHandle == ITK_NULLPTR )
+    ITK_NULLPTR);
+
+  if( threadHandle == ITK_NULLPTR )
     {
-    itkDebugMacro(<< "ERROR; adding thread to thread pool");
+    itkDebugMacro(<< "ERROR adding thread to thread pool");
     itkExceptionMacro(<< "Cannot create thread.");
     }
   else
     {
-
-    m_ThreadHandles.insert(newlyAddedThreadHandle);
-    m_ThreadProcessIdentifiersVector.push_back(ThreadProcessIdentifiers(JOB_THREADHANDLE_JUST_ADDED,
-                                                                   newlyAddedThreadHandle,dwThreadId) );
-
-    m_ThreadSemHandlePairingForWaitQueue.push_back(new ThreadSemaphorePair(newlyAddedThreadHandle));
-    m_ThreadSemHandlePairingQueue.push_back(new ThreadSemaphorePair(newlyAddedThreadHandle));
+    Semaphore sem = PlatformCreate();
+    m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+    m_IdleThreadIndices.insert(m_ThreadCount);
     }
-
-}
-
-void
-ThreadPool
-::WaitForThread(ThreadProcessIdType threadHandle)
-{
-  // Using _beginthreadex on a PC
-  WaitForSingleObject(threadHandle, INFINITE);
-  CloseHandle(threadHandle);
-}
-
-bool
-ThreadPool
-::CompareThreadHandles(ThreadProcessIdType t1, ThreadProcessIdType t2)
-{
-  if (t1 == t2) return true;
-  return false;
-}
-
-void *
-ThreadPool
-::ThreadExecute(void *param)
-{
-  // get the parameters passed inf
-  //ThreadPool *winThreadPool = (ThreadPool *)param;
-  //ThreadPool::ThreadArgStruct *threadStruct = (ThreadPool::ThreadArgStruct *)param;
-  ThreadPool *winThreadPool = (ThreadPool *)param;
-  ThreadIdType myId;
-  ThreadProcessIdentifiers::WinThreadIdType threadId = GetCurrentThreadId();
-  ThreadProcessIdentifiersVecType::iterator tpIter =
-    winThreadPool->m_ThreadProcessIdentifiersVector.begin(),
-    end = winThreadPool->m_ThreadProcessIdentifiersVector.end();
-  bool threadIdFound(false);
-  for (; tpIter != end; ++tpIter)
-    {
-    if (tpIter->m_WinThreadId == threadId)
-      {
-      myId = tpIter->m_ThreadNumericId;
-      threadIdFound = true;
-      break;
-      }
-    }
-  if(!threadIdFound)
-    {
-    std::cerr << "Can't find thread ID " << threadId << std::endl
-              << "candidates are:" << std::endl;
-    for(tpIter = winThreadPool->m_ThreadProcessIdentifiersVector.begin(); tpIter != end; ++tpIter)
-      {
-      std::cerr << tpIter->m_WinThreadId << std::endl;
-      }
-    std::cerr.flush();
-    abort();
-    }
-  HANDLE handle = winThreadPool->GetThreadHandleForThreadId(myId);
-
-  while( !winThreadPool->m_ScheduleForDestruction )
-    {
-    const ThreadJob &currentWinJob = winThreadPool->FetchWork( handle);
-    if( winThreadPool->m_ScheduleForDestruction )
-      {
-      continue;
-      }
-    if( currentWinJob.m_Id < 0 || currentWinJob.m_Assigned == false )
-      {
-      itkDebugStatement(std::cerr << "In thread pool thread : Empty job returned from FetchWork so ignoring and continuing .."
-                        << std::endl);
-      continue;
-      }
-    currentWinJob.m_ThreadFunction(currentWinJob.m_UserData);
-    winThreadPool->RemoveActiveId(currentWinJob.m_Id);
-    //signal that current job is done
-    if(winThreadPool->GetSemaphoreForThreadWait(handle )->SemaphorePost() != 0)
-      {
-      itkGenericExceptionMacro(<<"******************************Error in semaphore post");
-      }
-    }
-  return 0;
+  m_ThreadCount++;
 }
 
 }

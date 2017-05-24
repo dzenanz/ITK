@@ -32,15 +32,6 @@
 
 namespace itk
 {
-ThreadIdType MultiThreader::GetGlobalDefaultNumberOfThreadsByPlatform()
-{
-  int num;
-  // If we are not multithreading, the number of threads should
-  // always be 1
-  num = 1;
-  return num;
-}
-
 void MultiThreader::MultipleMethodExecute()
 {
   ThreadIdType thread_loop;

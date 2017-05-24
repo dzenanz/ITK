@@ -39,13 +39,11 @@ namespace itk
 struct ThreadJob
 {
 public:
-  typedef int JobIdType;
+  typedef size_t JobIdType;
 
   ThreadJob() :
     m_ThreadFunction(ITK_NULLPTR),
     m_Id(-1),
-    m_Assigned(false),
-    m_Executed(false),
     m_UserData(ITK_NULLPTR)
   {
   }
@@ -55,7 +53,7 @@ public:
   }
 
 
-/** Declaring function thatwill be called */
+/** Declaring function that will be called */
 #if defined(_WIN32) || defined(_WIN64)
     DWORD ( __stdcall *m_ThreadFunction )( void * ptr );
 #else
@@ -66,15 +64,8 @@ public:
     initialized*/
   JobIdType m_Id;
 
-  /** Set if the job is assigned to a thread */
-  bool m_Assigned;
-
-  /**  set if job is finished */
-  bool m_Executed;
-
  /** Stores the user's data that needs to be passed into the function */
   void *m_UserData;
-
 };
 
 } // end namespace itk

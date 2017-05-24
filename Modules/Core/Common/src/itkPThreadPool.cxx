@@ -22,166 +22,144 @@
 
 namespace itk
 {
-
-
+ThreadIdType
 ThreadPool
-::ThreadSemaphorePair
-::ThreadSemaphorePair(const ThreadProcessIdType & tph) :
-  m_ThreadProcessHandle(tph)
+::GetGlobalDefaultNumberOfThreadsByPlatform()
 {
-#if defined(__APPLE__)
-  if( semaphore_create(current_task(), &m_Semaphore, SYNC_POLICY_FIFO, 0) != KERN_SUCCESS)
-    {
-    itkGenericExceptionMacro(<<std::endl<<"m_Semaphore cannot be initialized. " << strerror(errno));
-    }
+  ThreadIdType num;
+
+  // Default the number of threads to be the number of available
+  // processors if we are using pthreads()
+#ifdef _SC_NPROCESSORS_ONLN
+  num = static_cast<ThreadIdType>( sysconf(_SC_NPROCESSORS_ONLN) );
+#elif defined( _SC_NPROC_ONLN )
+  num = static_cast<ThreadIdType>( sysconf(_SC_NPROC_ONLN) );
 #else
-  sem_init(&m_Semaphore, 0, 0);
+  num = 1;
 #endif
+#if defined( __SVR4 ) && defined( sun ) && defined( PTHREAD_MUTEX_NORMAL )
+  pthread_setconcurrency(num);
+#endif
+
+#ifdef __APPLE__
+  // Determine the number of CPU cores. Prefer sysctlbyname()
+  // over MPProcessors() because it doesn't require CoreServices
+  // (which is only available in 32bit on Mac OS X 10.4).
+  // hw.logicalcpu takes into account cores/CPUs that are
+  // disabled because of power management.
+  size_t dataLen = sizeof( int );   // 'num' is an 'int'
+  int    result = sysctlbyname("hw.logicalcpu", &num, &dataLen, ITK_NULLPTR, 0);
+  if( result == -1 )
+    {
+    num = 1;
+    }
+#endif
+  return num;
 }
 
-int
+ThreadPool::Semaphore
 ThreadPool
-::ThreadSemaphorePair
-::SemaphoreWait()
+::PlatformCreate()
 {
+  bool success = false;
+  Semaphore semaphore;
 #if defined(__APPLE__)
-  if(semaphore_wait(m_Semaphore) == KERN_SUCCESS)
-    {
-    return 0;
-    }
-  else
-    {
-    return -1;
-    }
+  success = semaphore_create(mach_task_self(), &semaphore, SYNC_POLICY_FIFO, 0) == KERN_SUCCESS;
 #else
-  return sem_wait(&m_Semaphore);
+  success = sem_init(&semaphore, 0, 0) == 0;
 #endif
+  if (!success)
+    {
+    itkGenericExceptionMacro(<< std::endl << "m_Semaphore cannot be initialized. " << strerror(errno));
+    }
+  return semaphore;
 }
 
-int
+void
 ThreadPool
-::ThreadSemaphorePair
-::SemaphorePost()
+::PlatformWait(Semaphore &semaphore)
 {
+  bool success = false;
 #if defined(__APPLE__)
-  if(semaphore_signal(m_Semaphore) == KERN_SUCCESS)
-    {
-    return 0;
-    }
-  else
-    {
-    return -1;
-    }
+  success = semaphore_wait(semaphore) == KERN_SUCCESS;
 #else
-  return sem_post(&m_Semaphore);
+  success = sem_wait(&semaphore) == 0;
 #endif
+  if (!success)
+    {
+    itkGenericExceptionMacro(<< "CreateSemaphore error" << strerror(errno));
+    }
+}
+
+void
+ThreadPool
+::PlatformSignal(Semaphore &semaphore)
+{
+  bool success = false;
+#if defined(__APPLE__)
+  success = semaphore_signal(semaphore) == KERN_SUCCESS;
+#else
+  success = sem_post(&semaphore) == 0;
+#endif
+  if (!success)
+    {
+    //m_ExceptionOccurred = true;
+    itkGenericExceptionMacro(<< "CreateSemaphore error");
+    }
+}
+
+void
+ThreadPool
+::PlatformDelete(Semaphore &semaphore)
+{
+  bool success = false;
+#if defined(__APPLE__)
+  success = semaphore_destroy(mach_task_self(), semaphore) == KERN_SUCCESS;
+#else
+  success = sem_destroy(&semaphore) == 0;
+#endif
+  if (!success)
+    {
+    //m_ExceptionOccurred = true;
+    itkGenericExceptionMacro(<< "CreateSemaphore error");
+    }
+}
+
+bool
+ThreadPool
+::PlatformClose(ThreadProcessIdType &threadId)
+{
+  return pthread_join(threadId) == 0;
 }
 
 void
 ThreadPool
 ::AddThread()
 {
-  pthread_attr_t attr;
+  ThreadProcessIdType threadHandle;
+  ThreadIdType *id = new ThreadIdType;
+  *id = m_ThreadCount;
 
+  pthread_attr_t attr;
   pthread_attr_init(&attr);
 
 #if !defined( __CYGWIN__ )
   pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
 #endif
+  const int rc = pthread_create(&threadHandle, &attr, &ThreadPool::ThreadExecute, id);
 
-  SimpleFastMutexLock tcLock;
-  tcLock.Lock();
-  tcLock.Unlock();
-
-  pthread_t newlyAddedThreadHandle;
-  const int rc = pthread_create(&newlyAddedThreadHandle, &attr, &ThreadPool::ThreadExecute, (void *)this );
-  if( rc )
+  if (rc)
     {
     itkDebugStatement(std::cerr << "ERROR; return code from pthread_create() is " << rc << std::endl);
     itkExceptionMacro(<< "Cannot create thread. Error in return code from pthread_create()");
     }
   else
     {
-
-    m_ThreadHandles.insert(newlyAddedThreadHandle);
-    m_ThreadProcessIdentifiersVector.push_back(ThreadProcessIdentifiers(JOB_THREADHANDLE_JUST_ADDED,
-                                                                   newlyAddedThreadHandle,
-                                                                   0));
-
-    m_ThreadSemHandlePairingForWaitQueue.push_back(new ThreadSemaphorePair(newlyAddedThreadHandle));
-    m_ThreadSemHandlePairingQueue.push_back(new ThreadSemaphorePair(newlyAddedThreadHandle));
-
-    itkDebugMacro(<< "Thread created with handle :" << newlyAddedThreadHandle << std::endl );
+    Semaphore sem = PlatformCreate();
+    m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+    m_IdleThreadIndices.insert(m_ThreadCount);
     }
-
-}
-
-void
-ThreadPool
-::WaitForThread(ThreadProcessIdType threadHandle)
-{
-  // Using POSIX threads
-  if ( pthread_join(threadHandle, ITK_NULLPTR) )
-    {
-    itkGenericExceptionMacro(<< "Unable to join thread.");
-    }
-}
-
-bool
-ThreadPool
-::CompareThreadHandles(ThreadProcessIdType t1, ThreadProcessIdType t2)
-{
-  return (pthread_equal(t1, t2) == 0 ? false : true);
-}
-
-// Thread function
-void *
-ThreadPool
-::ThreadExecute(void *param)
-{
-  // get the parameters passed in
-  ThreadPool *pThreadPool = reinterpret_cast<ThreadPool *>(param);
-  if(pThreadPool == ITK_NULLPTR)
-    {
-    itkGenericExceptionMacro(<< "param can't be converted to ThreadPool type");
-    }
-  // TODO: What is proper action if pThreadPool is 0?
-#if !defined(__ANDROID__)
-  const int s = pthread_setcancelstate(PTHREAD_CANCEL_ASYNCHRONOUS, ITK_NULLPTR);
-#else
-  const int s = 0;
-#endif
-
-  if( s != 0 )
-    {
-    //TODO: What is proper action if s != 0?
-    itkGenericExceptionMacro(<< "Cannot pthread_setcancelstate" << std::endl );
-    }
-
-  while( !pThreadPool->m_ScheduleForDestruction )
-    {
-    //TODO: Replace in both Pthread and WinThread  the return value of
-    // FetchWork.
-    const ThreadJob &currentPThreadJob = pThreadPool->FetchWork(pthread_self() );
-    if( pThreadPool->m_ScheduleForDestruction )
-      {
-      continue;
-      }
-    if(currentPThreadJob.m_Assigned == false )
-      {
-      itkDebugStatement(std::cerr << "\n Empty job returned from FetchWork so ignoring and continuing ..\n\n");
-      continue;
-      }
-    currentPThreadJob.m_ThreadFunction(currentPThreadJob.m_UserData);
-    pThreadPool->RemoveActiveId(currentPThreadJob.m_Id );
-
-    //signal that current job is done
-    if(pThreadPool->GetSemaphoreForThreadWait(pthread_self())->SemaphorePost() != 0)
-      {
-      itkGenericExceptionMacro(<<"******************************Error in semaphore post");
-      }
-    }
-  pthread_exit(ITK_NULLPTR);
+  m_ThreadCount++;
 }
 
 }

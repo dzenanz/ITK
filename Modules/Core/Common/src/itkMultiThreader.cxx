@@ -53,7 +53,7 @@ namespace itk
 static bool GlobalDefaultUseThreadPoolIsInitialized=false;
 static SimpleFastMutexLock globalDefaultInitializerLock;
 
-bool MultiThreader::m_GlobalDefaultUseThreadPool = false;
+bool MultiThreader::m_GlobalDefaultUseThreadPool = true;
 
 void MultiThreader::SetGlobalDefaultUseThreadPool( const bool GlobalDefaultUseThreadPool )
   {
@@ -159,81 +159,7 @@ void MultiThreader::SetNumberOfThreads(ThreadIdType numberOfThreads)
 
 ThreadIdType MultiThreader::GetGlobalDefaultNumberOfThreads()
 {
-  // if default number has been set then don't try to update it; just
-  // return the value
-  if( m_GlobalDefaultNumberOfThreads != 0 )
-    {
-    return m_GlobalDefaultNumberOfThreads;
-    }
-
-  /* The ITK_NUMBER_OF_THREADS_ENV_LIST contains is an
-   * environmental variable that holds a ':' separated
-   * list of environmental variables that whould be
-   * queried in order for setting the m_GlobalMaximumNumberOfThreads.
-   *
-   * This is intended to be a mechanism suitable to easy
-   * runtime modification to ease using the proper number
-   * of threads for load balancing batch processing
-   * systems where the number of threads
-   * authorized for use may be less than the number
-   * of physical processors on the computer.
-   *
-   * This list contains the Sun|Oracle Grid Engine
-   * environmental variable "NSLOTS" by default
-   */
-  std::vector<std::string> ITK_NUMBER_OF_THREADS_ENV_LIST;
-  std::string       itkNumberOfThreadsEvnListString = "";
-  if( itksys::SystemTools::GetEnv("ITK_NUMBER_OF_THREADS_ENV_LIST",
-                                  itkNumberOfThreadsEvnListString) )
-    {
-    // NOTE: We always put "ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS" at the end
-    // unconditionally.
-    itkNumberOfThreadsEvnListString += ":ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS";
-    }
-  else
-    {
-    itkNumberOfThreadsEvnListString = "NSLOTS:ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS";
-    }
-    {
-    std::stringstream numberOfThreadsEnvListStream(itkNumberOfThreadsEvnListString);
-    std::string       item;
-    while( std::getline(numberOfThreadsEnvListStream, item, ':') )
-      {
-      if( item.size() > 0 ) // Do not add empty items.
-        {
-        ITK_NUMBER_OF_THREADS_ENV_LIST.push_back(item);
-        }
-      }
-    }
-  // first, check for environment variable
-  std::string itkGlobalDefaultNumberOfThreadsEnv = "0";
-  for( std::vector<std::string>::const_iterator lit = ITK_NUMBER_OF_THREADS_ENV_LIST.begin();
-       lit != ITK_NUMBER_OF_THREADS_ENV_LIST.end();
-       ++lit )
-    {
-    if( itksys::SystemTools::GetEnv(lit->c_str(), itkGlobalDefaultNumberOfThreadsEnv) )
-      {
-      m_GlobalDefaultNumberOfThreads =
-        static_cast<ThreadIdType>( atoi( itkGlobalDefaultNumberOfThreadsEnv.c_str() ) );
-      }
-    }
-
-  // otherwise, set number of threads based on system information
-  if( m_GlobalDefaultNumberOfThreads <= 0 )
-    {
-    const ThreadIdType num = GetGlobalDefaultNumberOfThreadsByPlatform();
-    m_GlobalDefaultNumberOfThreads = num;
-    }
-
-  // limit the number of threads to m_GlobalMaximumNumberOfThreads
-  m_GlobalDefaultNumberOfThreads  = std::min( m_GlobalDefaultNumberOfThreads,
-                                              m_GlobalMaximumNumberOfThreads );
-
-  // verify that the default number of threads is larger than zero
-  m_GlobalDefaultNumberOfThreads  = std::max( m_GlobalDefaultNumberOfThreads,
-                                              NumericTraits<ThreadIdType>::OneValue() );
-
-  return m_GlobalDefaultNumberOfThreads;
+  return ThreadPool::GetGlobalDefaultNumberOfThreads();
 }
 
 // Constructor. Default all the methods to ITK_NULLPTR. Since the
@@ -260,8 +186,14 @@ MultiThreader::MultiThreader() :
 
   m_SingleMethod = ITK_NULLPTR;
   m_SingleData = ITK_NULLPTR;
-  m_NumberOfThreads = this->GetGlobalDefaultNumberOfThreads();
-
+  if (m_UseThreadPool)
+    {
+    m_NumberOfThreads = std::max(1u, m_ThreadPool->GetNumberOfCurrentlyIdleThreads());
+    }
+  else
+    {
+    m_NumberOfThreads = m_ThreadPool->GetGlobalDefaultNumberOfThreads();
+    }
 }
 
 MultiThreader::~MultiThreader()
