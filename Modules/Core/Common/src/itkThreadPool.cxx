@@ -221,23 +221,29 @@ ThreadPool
 
   std::vector<ThreadJobIdType> jobs(0);
 
-  { //block for mutex holder
+  {//block for mutex holder
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
   this->m_ScheduleForDestruction = true;
+  }
+
   for (ThreadIdType i = 0; i < m_ThreadSemaphores.size(); i++) //add dummy jobs for
     {
-    ThreadJob threadJob; //dummy job to stop the thread
+    ThreadJob threadJob; //dummy job to cleanly exit the thread
     ThreadJobIdType jobId = this->AddWork(threadJob);
     WaitForJob(jobId);
     }
+
+  {//block for mutex holder
+  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex); //collect ids of orphaned jobs
   jobs.reserve(m_JobSemaphores.size());
   JobSemaphoreMap::iterator it = m_JobSemaphores.begin();
   for(; it!=m_JobSemaphores.end(); ++it)
     {
     jobs.push_back(it->first);
     }
-  } //mutex block
+  }
 
+  //now clean up any jobs not waited for by the caller
   for (size_t i=0; i<jobs.size(); ++i)
     {
     WaitForJob(jobs[i]); //cleans up the semaphore
@@ -288,21 +294,22 @@ void *
 ThreadPool
 ::ThreadExecute(void *param)
 {
-  size_t *myId = reinterpret_cast<size_t *>(param);
+  ThreadIdType *myIdPtr = reinterpret_cast<ThreadIdType *>(param);
+  ThreadIdType myId = *myIdPtr;
   Pointer threadPool = GetInstance();
   Semaphore semaphore;
   {
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-  semaphore = threadPool->m_ThreadSemaphores[*myId].second;
-  delete myId;
+  semaphore = threadPool->m_ThreadSemaphores[myId].second;
+  delete myIdPtr;
   }
 
   while (!threadPool->m_ScheduleForDestruction)
     {
     threadPool->PlatformWait(semaphore);
-    if(threadPool->m_ScheduleForDestruction )
+    if (threadPool->m_ScheduleForDestruction)
       {
-      continue;
+      return ITK_NULLPTR;
       }
 
     ThreadJob *job;
@@ -310,12 +317,32 @@ ThreadPool
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
     job = threadPool->m_WorkQueue.front();
     threadPool->m_WorkQueue.pop_front();
-    }
+    } //releases the lock
 
-    job->m_ThreadFunction(job->m_UserData); //execute the job
+    bool repeat = false;
+    do
+      {
+      job->m_ThreadFunction(job->m_UserData); //execute the job, lock has been released
 
-    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-    PlatformSignal(threadPool->m_JobSemaphores.at(job->m_Id));
+      MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
+      PlatformSignal(threadPool->m_JobSemaphores.at(job->m_Id));
+
+      if (threadPool->m_ScheduleForDestruction)
+        {
+        return ITK_NULLPTR;
+        }
+
+      repeat = false;
+      if (!threadPool->m_WorkQueue.empty()) //take the next job before releasing the lock
+        {
+        repeat = true;
+        job = threadPool->m_WorkQueue.front();
+        threadPool->m_WorkQueue.pop_front();
+        }
+
+      threadPool->m_IdleThreadIndices.insert(myId);
+    } while (repeat); //ending the loop iteration releases the lock
+
     }
   return ITK_NULLPTR;
 }

@@ -54,15 +54,15 @@ namespace itk
 
 /**
  * \class ThreadPool
- * \brief Thread pool manages the threads for itk.
+ * \brief Thread pool maintains a constant number of threads.
  *
  * Thread pool is called and initialized from within the MultiThreader.
  * Initially the thread pool is started with GlobalDefaultNumberOfThreads.
  * The ThreadJob class is used to submit jobs to the thread pool. The ThreadJob's
  * necessary members need to be set and then the ThreadJob can be passed to the
  * ThreadPool by calling its AddWork method which returns the job id.
- * One can then wait for the job using the job id and
- * calling the WaitForJob method on the thread pool.
+ * One can then wait for the job by calling the WaitForJob method.
+ *
  * \ingroup OSSystemObjects
  * \ingroup ITKCommon
  */
@@ -88,12 +88,6 @@ public:
 #else
 #error Unknown thread system!
 #endif
-
-//#if defined(ITK_USE_WIN32_THREADS)
-//  typedef DWORD ThreadIdType;
-//#else
-//  typedef unsigned long ThreadIdType;
-//#endif
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(ThreadPool, Object);
@@ -150,38 +144,45 @@ private:
   /** Set when the thread pool is to be stopped */
   bool m_ScheduleForDestruction;
 
-  /** Maintains count of threads */
   ThreadIdType m_ThreadCount;
 
-  /** counter to assign job ids */
+  /** Counter to assign job ids */
   ThreadJobIdType m_IdCounter;
 
   /** Set if exception occurs */
   bool m_ExceptionOccurred;
 
-  typedef std::deque<ThreadJob *> ThreadJobQueue;
+  /** This is a list of jobs(ThreadJob) submitted to the thread pool.
+   * This is the only place where the jobs are submitted.
+   * Filled by AddWork, emptied by ThreadExecute.
+   */
+  std::deque<ThreadJob *> m_WorkQueue;
+
 
   typedef std::map<ThreadJobIdType, Semaphore> JobSemaphoreMap;
 
-  /** This is a list of jobs(ThreadJob) submitted to the thread pool.
-   * This is the only place where the jobs are submitted.
-   * We need a work queue because the thread pool assigns work to a
-   * thread which is free. So when a job is submitted, it has to be stored
-   * somewhere.
+  /** Semaphores which allow waiting on jobs by jobId.
+   * Semaphores initialized by AddWork.
+   * Waited on and deleted by WaitForJob.
+   * Signaled upon completion from ThreadExecute.
    */
-  ThreadJobQueue m_WorkQueue;
-
-  /** Semaphores which allow waiting on jobs by jobId. */
   JobSemaphoreMap m_JobSemaphores;
 
   typedef std::pair<ThreadProcessIdType, Semaphore> ThreadSeamphorePair;
 
-  /** Vector to hold all thread handles */
+  /** Vector to hold all thread handles and thread semaphores
+   * When a thread is idle, it is waiting on its semaphore.
+   * AddWork signals this semaphore to resume a thread.
+   * Thread handles are used to delete the threads.
+   */
   std::vector<ThreadSeamphorePair> m_ThreadSemaphores;
 
+  // ThreadExecute will add itself here when the queue is empty
+  // AddWork gets the first idle thread from here and signals its semaphore
+  // so it will resume execution and pick up the newly queued job
   std::set<ThreadIdType> m_IdleThreadIndices;
 
-  /** To lock on the vectors */
+  /** To lock on the internal variables */
   static SimpleFastMutexLock m_MainMutex;
 
   static Pointer m_ThreadPoolInstance;
@@ -189,7 +190,7 @@ private:
   /** To lock on m_ThreadPoolInstance */
   static SimpleFastMutexLock m_ThreadPoolInstanceMutex;
 
-  /** thread function */
+  /** The continuously running thread function */
   static void * ThreadExecute(void *param);
 
   /* Global variable defining the default number of threads to set at
