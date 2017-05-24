@@ -17,8 +17,13 @@
  *=========================================================================*/
 #include "itkThreadPool.h"
 #include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
+#if __cplusplus >= 201103L
+#include <thread>
+#endif // __cplusplus
 
 namespace itk
 {
@@ -34,6 +39,8 @@ ThreadPool
   num = static_cast<ThreadIdType>( sysconf(_SC_NPROCESSORS_ONLN) );
 #elif defined( _SC_NPROC_ONLN )
   num = static_cast<ThreadIdType>( sysconf(_SC_NPROC_ONLN) );
+#elif __cplusplus >= 201103L
+  num = std::thread::hardware_concurrency();
 #else
   num = 1;
 #endif
@@ -47,8 +54,8 @@ ThreadPool
   // (which is only available in 32bit on Mac OS X 10.4).
   // hw.logicalcpu takes into account cores/CPUs that are
   // disabled because of power management.
-  size_t dataLen = sizeof( int );   // 'num' is an 'int'
-  int    result = sysctlbyname("hw.logicalcpu", &num, &dataLen, ITK_NULLPTR, 0);
+  size_t dataLen = sizeof( int ); // 'num' is an 'int'
+  int result = sysctlbyname("hw.logicalcpu", &num, &dataLen, ITK_NULLPTR, 0);
   if( result == -1 )
     {
     num = 1;
@@ -129,7 +136,7 @@ bool
 ThreadPool
 ::PlatformClose(ThreadProcessIdType &threadId)
 {
-  return pthread_join(threadId) == 0;
+  return pthread_join(threadId, ITK_NULLPTR) == 0;
 }
 
 void

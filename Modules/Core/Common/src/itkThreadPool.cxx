@@ -224,7 +224,7 @@ ThreadPool
   { //block for mutex holder
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
   this->m_ScheduleForDestruction = true;
-  for (int i = 0; i < m_ThreadSemaphores.size(); i++) //add dummy jobs for
+  for (ThreadIdType i = 0; i < m_ThreadSemaphores.size(); i++) //add dummy jobs for
     {
     ThreadJob threadJob; //dummy job to stop the thread
     ThreadJobIdType jobId = this->AddWork(threadJob);
