@@ -277,8 +277,8 @@ ThreadPool
 {
 
   MutexLockHolder<SimpleFastMutexLock> mutexHolderSync(m_MainMutex);
-  m_WorkQueue.push_back(threadJob);
   threadJob.m_Id = m_IdCounter++;
+  m_WorkQueue.push_back(threadJob);
   m_JobSemaphores[threadJob.m_Id] = PlatformCreate();
   if (!m_IdleThreadIndices.empty())
     {

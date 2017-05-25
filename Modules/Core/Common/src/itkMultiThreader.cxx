@@ -231,6 +231,7 @@ void MultiThreader::SingleMethodExecute()
 {
   ThreadIdType        thread_loop = 0;
   ThreadProcessIdType process_id[ITK_MAX_THREADS];
+  ThreadJobIdType     job_id[ITK_MAX_THREADS];
 
   if( !m_SingleMethod )
     {
@@ -245,6 +246,7 @@ void MultiThreader::SingleMethodExecute()
   for( thread_loop = 1; thread_loop < m_NumberOfThreads; ++thread_loop )
     {
     process_id[thread_loop] = 0;
+    job_id[thread_loop] = 0;
     }
 
   // Spawn a set of threads through the SingleMethodProxy. Exceptions
@@ -264,8 +266,16 @@ void MultiThreader::SingleMethodExecute()
       m_ThreadInfoArray[thread_loop].NumberOfThreads = m_NumberOfThreads;
       m_ThreadInfoArray[thread_loop].ThreadFunction = m_SingleMethod;
 
-      process_id[thread_loop] =
-        this->DispatchSingleMethodThread(&m_ThreadInfoArray[thread_loop]);
+      if(this->m_UseThreadPool)
+        {
+        job_id[thread_loop] =
+          this->ThreadPoolDispatchSingleMethodThread(&m_ThreadInfoArray[thread_loop]);
+        }
+      else
+        {
+        process_id[thread_loop] =
+          this->SpawnDispatchSingleMethodThread(&m_ThreadInfoArray[thread_loop]);
+        }
       }
     }
   catch( std::exception & e )
@@ -300,7 +310,14 @@ void MultiThreader::SingleMethodExecute()
       {
       try
         {
-        this->WaitForSingleMethodThread(process_id[thread_loop]);
+        if(this->m_UseThreadPool)
+          {
+          m_ThreadPool->WaitForJob(job_id[thread_loop]);
+          }
+        else
+          {
+          this->SpawnWaitForSingleMethodThread(process_id[thread_loop]);
+          }
         }
       catch( ... )
         {
@@ -329,7 +346,14 @@ void MultiThreader::SingleMethodExecute()
     {
     try
       {
-      this->WaitForSingleMethodThread(process_id[thread_loop]);
+      if(this->m_UseThreadPool)
+        {
+        m_ThreadPool->WaitForJob(job_id[thread_loop]);
+        }
+      else
+        {
+        this->SpawnWaitForSingleMethodThread(process_id[thread_loop]);
+        }
       if( m_ThreadInfoArray[thread_loop].ThreadExitCode
           != ThreadInfoStruct::SUCCESS )
         {
@@ -359,6 +383,27 @@ void MultiThreader::SingleMethodExecute()
       itkExceptionMacro(<< "Exception occurred during SingleMethodExecute" << std::endl << exceptionDetails);
       }
     }
+}
+
+MultiThreader::ThreadJobIdType
+MultiThreader
+::ThreadPoolDispatchSingleMethodThread(MultiThreader::ThreadInfoStruct *threadInfo)
+{
+  ThreadJob threadJob;
+  threadJob.m_ThreadFunction = (this->SingleMethodProxy);
+  threadJob.m_UserData = (void *) threadInfo;
+  m_ThreadPool->AddWork(threadJob);
+  itkDebugMacro(<< std::endl << "Got handle :" << threadJob.m_Id);
+  return threadJob.m_Id;
+}
+
+void
+MultiThreader
+::ThreadPoolWaitForSingleMethodThread(MultiThreader::ThreadJobIdType jobId)
+{
+  // We are now using thread pool
+  itkDebugMacro(<<  std::endl << "For wait : jobId :" << jobId << std::endl );
+  m_ThreadPool->WaitForJob(jobId);
 }
 
 ITK_THREAD_RETURN_TYPE
@@ -397,31 +442,6 @@ MultiThreader
     }
 
   return ITK_THREAD_RETURN_VALUE;
-}
-
-ThreadProcessIdType
-MultiThreader
-::DispatchSingleMethodThread(ThreadInfoStruct *info)
-{
-  if(this->m_UseThreadPool)
-    {
-    return this->ThreadPoolDispatchSingleMethodThread(info);
-    }
-  return this->SpawnDispatchSingleMethodThread(info);
-}
-
-void
-MultiThreader
-::WaitForSingleMethodThread(ThreadProcessIdType threadHandle)
-{
-  if(this->m_UseThreadPool)
-    {
-    this->ThreadPoolWaitForSingleMethodThread(threadHandle);
-    }
-  else
-    {
-    this->SpawnWaitForSingleMethodThread(threadHandle);
-    }
 }
 
 // Print method for the multithreader

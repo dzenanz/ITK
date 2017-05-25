@@ -237,28 +237,17 @@ private:
    * exceptions thrown by the threads. */
   static ITK_THREAD_RETURN_TYPE SingleMethodProxy(void *arg);
 
+  typedef ThreadPool::ThreadJobIdType ThreadJobIdType;
+
   /** Assign work to a thread in the thread pool */
-  ThreadProcessIdType ThreadPoolDispatchSingleMethodThread(ThreadInfoStruct *);
+  ThreadJobIdType ThreadPoolDispatchSingleMethodThread(ThreadInfoStruct *);
   /** wait for a thread in the threadpool to finish work */
-  void ThreadPoolWaitForSingleMethodThread(ThreadProcessIdType);
+  void ThreadPoolWaitForSingleMethodThread(ThreadJobIdType);
 
   /** spawn a new thread for the SingleMethod */
   ThreadProcessIdType SpawnDispatchSingleMethodThread(ThreadInfoStruct *);
   /** wait for a thread in the threadpool to finish work */
   void SpawnWaitForSingleMethodThread(ThreadProcessIdType);
-
-  /** Spawn a thread for the prescribed SingleMethod.  This routine
-   * spawns a thread to the SingleMethodProxy which runs the
-   * prescribed SingleMethod.  The SingleMethodProxy allows for
-   * exceptions within a thread to be naively handled. A similar
-   * abstraction needs to be added for MultipleMethod and
-   * SpawnThread. */
-  ThreadProcessIdType DispatchSingleMethodThread(ThreadInfoStruct *);
-
-  /** Wait for a thread running the prescribed SingleMethod. A similar
-   * abstraction needs to be added for MultipleMethod (SpawnThread
-   * already has a routine to do this. */
-  void WaitForSingleMethodThread(ThreadProcessIdType);
 
   /** Friends of Multithreader.
    * ProcessObject is a friend so that it can call PrintSelf() on its

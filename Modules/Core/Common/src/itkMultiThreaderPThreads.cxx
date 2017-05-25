@@ -179,27 +179,6 @@ void MultiThreader::TerminateThread(ThreadIdType ThreadID)
 
 void
 MultiThreader
-::ThreadPoolWaitForSingleMethodThread(ThreadProcessIdType threadHandle)
-{
-  itkDebugMacro(<<  std::endl << "For wait : threadhandle :" << threadHandle << std::endl );
-  m_ThreadPool->WaitForJobOnThreadHandle(threadHandle);
-}
-
-ThreadProcessIdType
-MultiThreader
-::ThreadPoolDispatchSingleMethodThread(MultiThreader::ThreadInfoStruct *threadInfo)
-{
-
-  ThreadJob threadJob;
-  threadJob.m_ThreadFunction =  reinterpret_cast<c_void_cast>(this->SingleMethodProxy);
-  threadJob.m_UserData = (void *) threadInfo;
-  ThreadProcessIdType returnHandle = m_ThreadPool->AssignWork(threadJob);
-  itkDebugMacro(<< std::endl << "Got handle :" << returnHandle );
-  return returnHandle;
-}
-
-void
-MultiThreader
 ::SpawnWaitForSingleMethodThread(ThreadProcessIdType threadHandle)
 {
   // Using POSIX threads
