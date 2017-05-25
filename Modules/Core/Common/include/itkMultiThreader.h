@@ -241,8 +241,6 @@ private:
 
   /** Assign work to a thread in the thread pool */
   ThreadJobIdType ThreadPoolDispatchSingleMethodThread(ThreadInfoStruct *);
-  /** wait for a thread in the threadpool to finish work */
-  void ThreadPoolWaitForSingleMethodThread(ThreadJobIdType);
 
   /** spawn a new thread for the SingleMethod */
   ThreadProcessIdType SpawnDispatchSingleMethodThread(ThreadInfoStruct *);

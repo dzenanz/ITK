@@ -342,7 +342,7 @@ void MultiThreader::SingleMethodExecute()
     }
   // The parent thread has finished this->SingleMethod() - so now it
   // waits for each of the other processes to exit
-  for( thread_loop = 1; thread_loop < m_NumberOfThreads && process_id[thread_loop]; ++thread_loop )
+  for( thread_loop = 1; thread_loop < m_NumberOfThreads; ++thread_loop )
     {
     try
       {
@@ -395,15 +395,6 @@ MultiThreader
   m_ThreadPool->AddWork(threadJob);
   itkDebugMacro(<< std::endl << "Got handle :" << threadJob.m_Id);
   return threadJob.m_Id;
-}
-
-void
-MultiThreader
-::ThreadPoolWaitForSingleMethodThread(MultiThreader::ThreadJobIdType jobId)
-{
-  // We are now using thread pool
-  itkDebugMacro(<<  std::endl << "For wait : jobId :" << jobId << std::endl );
-  m_ThreadPool->WaitForJob(jobId);
 }
 
 ITK_THREAD_RETURN_TYPE
