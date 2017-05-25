@@ -277,7 +277,7 @@ ThreadPool
 {
 
   MutexLockHolder<SimpleFastMutexLock> mutexHolderSync(m_MainMutex);
-  m_WorkQueue.push_back(&threadJob);
+  m_WorkQueue.push_back(threadJob);
   threadJob.m_Id = m_IdCounter++;
   m_JobSemaphores[threadJob.m_Id] = PlatformCreate();
   if (!m_IdleThreadIndices.empty())
@@ -312,7 +312,7 @@ ThreadPool
       return ITK_NULLPTR;
       }
 
-    ThreadJob *job;
+    ThreadJob job;
     {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
     job = threadPool->m_WorkQueue.front();
@@ -322,10 +322,10 @@ ThreadPool
     bool repeat = false;
     do
       {
-      job->m_ThreadFunction(job->m_UserData); //execute the job, lock has been released
+      job.m_ThreadFunction(job.m_UserData); //execute the job, lock has been released
 
       MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-      PlatformSignal(threadPool->m_JobSemaphores.at(job->m_Id));
+      PlatformSignal(threadPool->m_JobSemaphores.at(job.m_Id));
 
       if (threadPool->m_ScheduleForDestruction)
         {

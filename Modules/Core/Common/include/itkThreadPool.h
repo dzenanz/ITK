@@ -156,7 +156,7 @@ private:
    * This is the only place where the jobs are submitted.
    * Filled by AddWork, emptied by ThreadExecute.
    */
-  std::deque<ThreadJob *> m_WorkQueue;
+  std::deque<ThreadJob> m_WorkQueue;
 
 
   typedef std::map<ThreadJobIdType, Semaphore> JobSemaphoreMap;
