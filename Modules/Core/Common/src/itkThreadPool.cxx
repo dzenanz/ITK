@@ -315,6 +315,10 @@ ThreadPool
     ThreadJob job;
     {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
+    if (threadPool->m_WorkQueue.empty()) //does not happen often
+      {
+      continue;
+      }
     job = threadPool->m_WorkQueue.front();
     threadPool->m_WorkQueue.pop_front();
     } //releases the lock

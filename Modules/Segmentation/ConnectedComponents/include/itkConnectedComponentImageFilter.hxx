@@ -240,7 +240,7 @@ ConnectedComponentImageFilter< TInputImage, TOutputImage, TMaskImage >
   const SizeValueType xsize = output->GetRequestedRegion().GetSize()[0];
   const SizeValueType linecount = pixelcount / xsize;
 
-  SizeValueType lastLineIdForThread =  linecount;
+  SizeValueType lastLineIdForThread = linecount;
   SizeValueType nbOfLineIdToJoin = 0;
   if ( threadId != nbOfThreads - 1 )
     {
@@ -365,8 +365,6 @@ ConnectedComponentImageFilter< TInputImage, TOutputImage, TMaskImage >
   ImageRegionIterator< OutputImageType > oit(output, outputRegionForThread);
   ImageRegionIterator< OutputImageType > fstart = oit;
   fstart.GoToBegin();
-  ImageRegionIterator< OutputImageType > fend = oit;
-  fend.GoToEnd();
 
   lastLineIdForThread = firstLineIdForThread
                         + RegionType( outputRegionIdx,
@@ -395,7 +393,7 @@ ConnectedComponentImageFilter< TInputImage, TOutputImage, TMaskImage >
     progress.CompletedPixel();
     }
   // fill the rest of the image with background value
-  for (; fstart != fend; ++fstart )
+  for (; !fstart.IsAtEnd(); ++fstart )
     {
     fstart.Set(m_BackgroundValue);
     }
