@@ -29,7 +29,6 @@ SimpleFastMutexLock ThreadPool::m_ThreadPoolInstanceMutex;
 
 ThreadPool::Pointer ThreadPool::m_ThreadPoolInstance;
 
-
 ThreadPool::Pointer
 ThreadPool
 ::New()
@@ -65,7 +64,7 @@ ThreadPool
   m_IdCounter(1),
   m_ExceptionOccurred(false)
 {
-  AddThreads(GetGlobalDefaultNumberOfThreads());
+  AddThreads(this->OverloadFactor() * this->GetGlobalDefaultNumberOfThreads());
 }
 
 #ifndef ITK_USE_WIN32_THREADS

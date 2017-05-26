@@ -188,7 +188,10 @@ MultiThreader::MultiThreader() :
   m_SingleData = ITK_NULLPTR;
   if (m_UseThreadPool)
     {
-    m_NumberOfThreads = std::max(1u, m_ThreadPool->GetNumberOfCurrentlyIdleThreads());
+    ThreadIdType idleCount = m_ThreadPool->GetNumberOfCurrentlyIdleThreads();
+    idleCount = std::max(1u, idleCount);
+    ThreadIdType maxCount = std::max(1u, GetGlobalDefaultNumberOfThreads());
+    m_NumberOfThreads = std::min(maxCount, idleCount);
     }
   else
     {
