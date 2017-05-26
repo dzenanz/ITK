@@ -162,10 +162,6 @@ ThreadIdType MultiThreader::GetGlobalDefaultNumberOfThreads()
   return ThreadPool::GetGlobalDefaultNumberOfThreads();
 }
 
-// Constructor. Default all the methods to ITK_NULLPTR. Since the
-// ThreadInfoArray is static, the ThreadIDs can be initialized here
-// and will not change.
-
 MultiThreader::MultiThreader() :
   m_ThreadPool(ThreadPool::GetInstance() ),
   m_UseThreadPool( MultiThreader::GetGlobalDefaultUseThreadPool() )
@@ -309,7 +305,7 @@ void MultiThreader::SingleMethodExecute()
     {
     // Need cleanup and rethrow ProcessAborted
     // close down other threads
-    for( thread_loop = 1; thread_loop < m_NumberOfThreads && process_id[thread_loop]; ++thread_loop )
+    for( thread_loop = 1; thread_loop < m_NumberOfThreads; ++thread_loop )
       {
       try
         {

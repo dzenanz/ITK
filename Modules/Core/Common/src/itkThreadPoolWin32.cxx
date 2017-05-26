@@ -106,7 +106,6 @@ ThreadPool
     {
     Semaphore sem = PlatformCreate();
     m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
-    m_IdleThreadIndices.insert(m_ThreadCount);
     }
   m_ThreadCount++;
 }

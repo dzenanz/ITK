@@ -171,6 +171,7 @@ ThreadPool
   for( unsigned int i = 0; i < count; ++i )
     {
     AddThread();
+    m_IdleThreadIndices.insert(m_ThreadCount - 1);
     }
 }
 
@@ -343,10 +344,10 @@ ThreadPool
         threadPool->m_WorkQueue.pop_front();
         }
 
-      threadPool->m_IdleThreadIndices.insert(myId);
     } while (repeat); //ending the loop iteration releases the lock
 
-    }
+    threadPool->m_IdleThreadIndices.insert(myId);
+  }
   return ITK_NULLPTR;
 }
 
