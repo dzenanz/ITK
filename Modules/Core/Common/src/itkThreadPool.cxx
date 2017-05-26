@@ -358,13 +358,7 @@ ThreadPool
 
     {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-    auto result = threadPool->m_IdleThreadIndices.insert(myId);
-    //debug
-    if (!result.second)
-      {
-        std::cerr << "Duplicate idle ID: " << *result.first << std::endl;
-        itkGenericExceptionMacro(<< "Duplicate idle ID");
-      }
+    threadPool->m_IdleThreadIndices.insert(myId);
     }
   }
   return ITK_NULLPTR;
