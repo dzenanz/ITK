@@ -120,7 +120,7 @@ public:
   static ThreadIdType GetGlobalDefaultNumberOfThreads();
 
   /** Create this times more threads than processors */
-  static const float OverloadFactor()
+  static float OverloadFactor()
   {
     return 2.0f;
   }
