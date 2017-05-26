@@ -80,7 +80,9 @@ ThreadIdType ThreadPool::GetGlobalDefaultNumberOfThreadsByPlatform()
 // 0 => Not initialized.
 ThreadIdType ThreadPool::m_GlobalDefaultNumberOfThreads = 0;
 
-ThreadIdType ThreadPool::GetGlobalDefaultNumberOfThreads()
+ThreadIdType
+ThreadPool
+::GetGlobalDefaultNumberOfThreads()
 {
   // if default number has been set then don't try to update it; just
   // return the value
@@ -157,6 +159,13 @@ ThreadIdType ThreadPool::GetGlobalDefaultNumberOfThreads()
                                               NumericTraits<ThreadIdType>::OneValue() );
 
   return m_GlobalDefaultNumberOfThreads;
+}
+
+float
+ThreadPool
+::OverloadFactor()
+{
+  return 1.3f;
 }
 
 void
@@ -315,9 +324,10 @@ ThreadPool
     ThreadJob job;
     {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-    if (threadPool->m_WorkQueue.empty()) //does not happen often
+    if (threadPool->m_WorkQueue.empty()) //another thread stole work meant for me
       {
-      continue;
+      threadPool->m_IdleThreadIndices.insert(myId);
+      continue; //does not happen often
       }
     job = threadPool->m_WorkQueue.front();
     threadPool->m_WorkQueue.pop_front();
@@ -346,7 +356,16 @@ ThreadPool
 
     } while (repeat); //ending the loop iteration releases the lock
 
-    threadPool->m_IdleThreadIndices.insert(myId);
+    {
+    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
+    auto result = threadPool->m_IdleThreadIndices.insert(myId);
+    //debug
+    if (!result.second)
+      {
+        std::cerr << "Duplicate idle ID: " << *result.first << std::endl;
+        itkGenericExceptionMacro(<< "Duplicate idle ID");
+      }
+    }
   }
   return ITK_NULLPTR;
 }

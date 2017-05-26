@@ -120,10 +120,7 @@ public:
   static ThreadIdType GetGlobalDefaultNumberOfThreads();
 
   /** Create this times more threads than processors */
-  static float OverloadFactor()
-  {
-    return 2.0f;
-  }
+  static float OverloadFactor();
 
 protected:
 
