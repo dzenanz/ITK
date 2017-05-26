@@ -31,16 +31,15 @@ ThreadPool
   return num;
 }
 
-ThreadPool::Semaphore
+void
 ThreadPool
-::PlatformCreate()
+::PlatformCreate(Semaphore &semaphore)
 {
-  Semaphore semaphore = CreateSemaphore(ITK_NULLPTR, 0, 1000, ITK_NULLPTR);
+  semaphore = CreateSemaphore(ITK_NULLPTR, 0, 1000, ITK_NULLPTR);
   if (semaphore == ITK_NULLPTR)
     {
     itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
     }
-  return semaphore;
 }
 
 void
@@ -104,8 +103,9 @@ ThreadPool
     }
   else
     {
-    Semaphore sem = PlatformCreate();
+    Semaphore sem;
     m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+    PlatformCreate(m_ThreadSemaphores.back().second);
     }
   m_ThreadCount++;
 }

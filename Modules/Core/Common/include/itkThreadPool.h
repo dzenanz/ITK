@@ -124,7 +124,7 @@ public:
 
 protected:
 
-  static Semaphore PlatformCreate();
+  static void PlatformCreate(Semaphore &semaphore);
   static void PlatformWait(Semaphore &semaphore);
   static void PlatformSignal(Semaphore &semaphore);
   static void PlatformDelete(Semaphore &semaphore);

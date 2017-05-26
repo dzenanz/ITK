@@ -21,9 +21,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#if __cplusplus >= 201103L
-#include <thread>
-#endif // __cplusplus
 
 namespace itk
 {
@@ -39,8 +36,6 @@ ThreadPool
   num = static_cast<ThreadIdType>( sysconf(_SC_NPROCESSORS_ONLN) );
 #elif defined( _SC_NPROC_ONLN )
   num = static_cast<ThreadIdType>( sysconf(_SC_NPROC_ONLN) );
-#elif __cplusplus >= 201103L
-  num = std::thread::hardware_concurrency();
 #else
   num = 1;
 #endif
@@ -64,12 +59,11 @@ ThreadPool
   return num;
 }
 
-ThreadPool::Semaphore
+void
 ThreadPool
-::PlatformCreate()
+::PlatformCreate(Semaphore &semaphore)
 {
   bool success = false;
-  Semaphore semaphore;
 #if defined(__APPLE__)
   success = semaphore_create(mach_task_self(), &semaphore, SYNC_POLICY_FIFO, 0) == KERN_SUCCESS;
 #else
@@ -79,7 +73,6 @@ ThreadPool
     {
     itkGenericExceptionMacro(<< std::endl << "m_Semaphore cannot be initialized. " << strerror(errno));
     }
-  return semaphore;
 }
 
 void
@@ -162,8 +155,9 @@ ThreadPool
     }
   else
     {
-    Semaphore sem = PlatformCreate();
+    Semaphore sem;
     m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+    PlatformCreate(m_ThreadSemaphores.back().second);
     }
   m_ThreadCount++;
 }
