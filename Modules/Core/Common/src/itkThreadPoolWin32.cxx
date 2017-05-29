@@ -31,6 +31,28 @@ ThreadPool
   return num;
 }
 
+//Returns the last Win32 error, in string format. Returns an empty string if there is no error.
+std::string GetLastErrorAsString()
+{
+  //Get the error message, if any.
+  DWORD errorMessageID = ::GetLastError();
+  if (errorMessageID == 0)
+    {
+    return std::string(); //No error message has been recorded
+    }
+
+  LPSTR messageBuffer = nullptr;
+  size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+
+  std::string message(messageBuffer, size);
+
+  //Free the buffer.
+  LocalFree(messageBuffer);
+
+  return message;
+}
+
 void
 ThreadPool
 ::PlatformCreate(Semaphore &semaphore)
@@ -38,7 +60,7 @@ ThreadPool
   semaphore = CreateSemaphore(ITK_NULLPTR, 0, 1000, ITK_NULLPTR);
   if (semaphore == ITK_NULLPTR)
     {
-    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
+    itkGenericExceptionMacro(<< "CreateSemaphore error. " << GetLastErrorAsString());
     }
 }
 
@@ -49,7 +71,7 @@ ThreadPool
   DWORD dwWaitResult = WaitForSingleObject(semaphore, INFINITE);
   if (dwWaitResult != WAIT_OBJECT_0)
     {
-    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
+    itkGenericExceptionMacro(<< "SemaphoreWait error. " << GetLastErrorAsString());
     }
 }
 
@@ -59,7 +81,7 @@ ThreadPool
 {
   if (!ReleaseSemaphore(semaphore, 1, ITK_NULLPTR))
     {
-    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
+    itkGenericExceptionMacro(<< "SignalSemaphore error. " << GetLastErrorAsString());
     }
 }
 
@@ -69,7 +91,7 @@ ThreadPool
 {
   if (!CloseHandle(semaphore))
     {
-    itkGenericExceptionMacro(<< "CreateSemaphore error" << GetLastError());
+    itkGenericExceptionMacro(<< "DeleteSemaphore error. " << GetLastErrorAsString());
     }
 }
 
@@ -103,7 +125,7 @@ ThreadPool
   if( threadHandle == ITK_NULLPTR )
     {
     itkDebugMacro(<< "ERROR adding thread to thread pool");
-    itkExceptionMacro(<< "Cannot create thread.");
+    itkExceptionMacro(<< "Cannot create thread. " << GetLastErrorAsString());
     }
 }
 

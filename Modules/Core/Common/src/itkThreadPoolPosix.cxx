@@ -71,7 +71,7 @@ ThreadPool
 #endif
   if (!success)
     {
-    itkGenericExceptionMacro(<< std::endl << "m_Semaphore cannot be initialized. " << strerror(errno));
+    itkGenericExceptionMacro(<< std::endl << "CreateSemaphore error. " << strerror(errno));
     }
 }
 
@@ -87,7 +87,7 @@ ThreadPool
 #endif
   if (!success)
     {
-    itkGenericExceptionMacro(<< "CreateSemaphore error" << strerror(errno));
+    itkGenericExceptionMacro(<< "SemaphoreWait error. " << strerror(errno));
     }
 }
 
@@ -104,7 +104,7 @@ ThreadPool
   if (!success)
     {
     //m_ExceptionOccurred = true;
-    itkGenericExceptionMacro(<< "CreateSemaphore error");
+    itkGenericExceptionMacro(<< "SignalSemaphore error. " << strerror(errno));
     }
 }
 
@@ -121,7 +121,7 @@ ThreadPool
   if (!success)
     {
     //m_ExceptionOccurred = true;
-    itkGenericExceptionMacro(<< "CreateSemaphore error");
+    itkGenericExceptionMacro(<< "DeleteSemaphore error. " << strerror(errno));
     }
 }
 
@@ -155,7 +155,7 @@ ThreadPool
   if (rc)
     {
     itkDebugStatement(std::cerr << "ERROR; return code from pthread_create() is " << rc << std::endl);
-    itkExceptionMacro(<< "Cannot create thread. Error in return code from pthread_create()");
+    itkExceptionMacro(<< "Cannot create thread. " << strerror(errno));
     }
 }
 
