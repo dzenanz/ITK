@@ -180,7 +180,8 @@ ThreadPool
   for( unsigned int i = 0; i < count; ++i )
     {
     AddThread();
-    m_IdleThreadIndices.insert(m_ThreadCount - 1);
+    m_IdleThreadIndices.insert(m_ThreadCount);
+    m_ThreadCount++;
     }
 }
 
@@ -192,10 +193,11 @@ ThreadPool
   for (size_t i = 0; i < m_ThreadSemaphores.size(); i++)
     {
     PlatformDelete(m_ThreadSemaphores[i].second);
-    if (!PlatformClose(m_ThreadSemaphores[i].first))
+    if (!PlatformClose(*m_ThreadSemaphores[i].first))
       {
       m_ExceptionOccurred = true;
       }
+    delete m_ThreadSemaphores[i].first;
     }
 }
 

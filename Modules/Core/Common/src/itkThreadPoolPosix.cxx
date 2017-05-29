@@ -136,9 +136,13 @@ void
 ThreadPool
 ::AddThread()
 {
-  ThreadProcessIdType threadHandle;
+  ThreadProcessIdType *threadHandle = new ThreadProcessIdType;
   ThreadIdType *id = new ThreadIdType;
   *id = m_ThreadCount;
+
+  Semaphore sem;
+  m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+  PlatformCreate(m_ThreadSemaphores.back().second);
 
   pthread_attr_t attr;
   pthread_attr_init(&attr);
@@ -146,20 +150,13 @@ ThreadPool
 #if !defined( __CYGWIN__ )
   pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
 #endif
-  const int rc = pthread_create(&threadHandle, &attr, &ThreadPool::ThreadExecute, id);
+  const int rc = pthread_create(threadHandle, &attr, &ThreadPool::ThreadExecute, id);
 
   if (rc)
     {
     itkDebugStatement(std::cerr << "ERROR; return code from pthread_create() is " << rc << std::endl);
     itkExceptionMacro(<< "Cannot create thread. Error in return code from pthread_create()");
     }
-  else
-    {
-    Semaphore sem;
-    m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
-    PlatformCreate(m_ThreadSemaphores.back().second);
-    }
-  m_ThreadCount++;
 }
 
 }

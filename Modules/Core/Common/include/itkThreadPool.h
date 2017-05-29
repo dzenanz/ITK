@@ -171,7 +171,7 @@ private:
    */
   JobSemaphoreMap m_JobSemaphores;
 
-  typedef std::pair<ThreadProcessIdType, Semaphore> ThreadSeamphorePair;
+  typedef std::pair<ThreadProcessIdType *, Semaphore> ThreadSeamphorePair;
 
   /** Vector to hold all thread handles and thread semaphores
    * When a thread is idle, it is waiting on its semaphore.

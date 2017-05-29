@@ -84,11 +84,15 @@ void
 ThreadPool
 ::AddThread()
 {
-  ThreadProcessIdType threadHandle;
+  ThreadProcessIdType *threadHandle = new ThreadProcessIdType;
   ThreadIdType *id = new ThreadIdType;
   *id = m_ThreadCount;
 
-  threadHandle = CreateThread(
+  Semaphore sem;
+  m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
+  PlatformCreate(m_ThreadSemaphores.back().second);
+
+  *threadHandle = CreateThread(
     ITK_NULLPTR,
     0,
     (LPTHREAD_START_ROUTINE) ThreadPool::ThreadExecute,
@@ -101,13 +105,6 @@ ThreadPool
     itkDebugMacro(<< "ERROR adding thread to thread pool");
     itkExceptionMacro(<< "Cannot create thread.");
     }
-  else
-    {
-    Semaphore sem;
-    m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
-    PlatformCreate(m_ThreadSemaphores.back().second);
-    }
-  m_ThreadCount++;
 }
 
 }
