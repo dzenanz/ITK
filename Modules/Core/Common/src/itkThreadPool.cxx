@@ -177,6 +177,7 @@ ThreadPool
     {
     return;
     }
+  m_ThreadSemaphores.reserve(m_ThreadSemaphores.size() + count);
   for( unsigned int i = 0; i < count; ++i )
     {
     AddThread();
@@ -308,16 +309,16 @@ ThreadPool
   ThreadIdType *myIdPtr = reinterpret_cast<ThreadIdType *>(param);
   ThreadIdType myId = *myIdPtr;
   Pointer threadPool = GetInstance();
-  Semaphore semaphore;
+  Semaphore *semaphore;
   {
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_MainMutex);
-  semaphore = threadPool->m_ThreadSemaphores[myId].second;
+  semaphore = &threadPool->m_ThreadSemaphores[myId].second;
   delete myIdPtr;
   }
 
   while (!threadPool->m_ScheduleForDestruction)
     {
-    threadPool->PlatformWait(semaphore);
+    threadPool->PlatformWait(*semaphore);
     if (threadPool->m_ScheduleForDestruction)
       {
       return ITK_NULLPTR;
