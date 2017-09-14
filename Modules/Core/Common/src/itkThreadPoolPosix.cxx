@@ -22,6 +22,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include "itksys/SystemInformation.hxx"
+
 namespace itk
 {
 ThreadIdType
@@ -43,19 +45,15 @@ ThreadPool
   pthread_setconcurrency(num);
 #endif
 
-#ifdef __APPLE__
-  // Determine the number of CPU cores. Prefer sysctlbyname()
-  // over MPProcessors() because it doesn't require CoreServices
-  // (which is only available in 32bit on Mac OS X 10.4).
-  // hw.logicalcpu takes into account cores/CPUs that are
-  // disabled because of power management.
-  size_t dataLen = sizeof( int ); // 'num' is an 'int'
-  int result = sysctlbyname("hw.logicalcpu", &num, &dataLen, ITK_NULLPTR, 0);
+  itksys::SystemInformation mySys;
+  mySys.RunCPUCheck();
+  mySys.RunOSCheck();
+  mySys.RunMemoryCheck();
+  int result = mySys.GetNumberOfPhysicalCPU(); // Avoid using hyperthreading cores.
   if( result == -1 )
     {
     num = 1;
     }
-#endif
   return num;
 }
 
