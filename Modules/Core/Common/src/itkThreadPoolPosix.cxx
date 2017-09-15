@@ -139,6 +139,7 @@ ThreadPool
   *id = m_ThreadCount;
 
   Semaphore sem;
+  ThreadPool::PlatformCreate(sem); /* Initialize semaphore to default values */
   m_ThreadSemaphores.push_back(std::make_pair(threadHandle, sem));
   PlatformCreate(m_ThreadSemaphores.back().second);
 
