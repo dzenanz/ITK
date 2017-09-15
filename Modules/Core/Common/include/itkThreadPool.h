@@ -171,19 +171,15 @@ private:
    */
   JobSemaphoreMap m_JobSemaphores;
 
-  typedef std::pair<ThreadProcessIdType *, Semaphore> ThreadSemphorePair;
+  /** When a thread is idle, it is waiting on m_ThreadsSemaphore.
+  * AddWork signals this semaphore to resume a (random) thread.
+  */
+  Semaphore m_ThreadsSemaphore;
 
-  /** Vector to hold all thread handles and thread semaphores
-   * When a thread is idle, it is waiting on its semaphore.
-   * AddWork signals this semaphore to resume a thread.
+  /** Vector to hold all thread handles.
    * Thread handles are used to delete the threads.
    */
-  std::vector<ThreadSemphorePair> m_ThreadSemaphores;
-
-  // ThreadExecute will add itself here when the queue is empty
-  // AddWork gets the first idle thread from here and signals its semaphore
-  // so it will resume execution and pick up the newly queued job
-  std::set<ThreadIdType> m_IdleThreadIndices;
+  std::vector<ThreadProcessIdType> m_Threads;
 
   /** To lock on the internal variables */
   static SimpleFastMutexLock m_Mutex;

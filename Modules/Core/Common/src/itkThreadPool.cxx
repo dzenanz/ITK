@@ -53,7 +53,7 @@ ThreadPool
       m_ThreadPoolInstance->UnRegister();
       }
     }
-    return m_ThreadPoolInstance;
+  return m_ThreadPoolInstance;
 }
 
 ThreadPool
@@ -63,6 +63,7 @@ ThreadPool
   m_IdCounter(1),
   m_ExceptionOccurred(false)
 {
+  PlatformCreate(m_ThreadsSemaphore);
   AddThreads(this->OverloadFactor() * this->GetGlobalDefaultNumberOfThreads());
 }
 
@@ -176,11 +177,10 @@ ThreadPool
     {
     return;
     }
-  m_ThreadSemaphores.reserve(m_ThreadSemaphores.size() + count);
+  m_Threads.reserve(m_Threads.size() + count);
   for( unsigned int i = 0; i < count; ++i )
     {
     AddThread();
-    m_IdleThreadIndices.insert(m_ThreadCount);
     m_ThreadCount++;
     }
 }
@@ -190,14 +190,12 @@ ThreadPool
 ::DeleteThreads()
 {
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  for (size_t i = 0; i < m_ThreadSemaphores.size(); i++)
+  for (size_t i = 0; i < m_Threads.size(); i++)
     {
-    PlatformDelete(m_ThreadSemaphores[i].second);
-    if (!PlatformClose(*m_ThreadSemaphores[i].first))
+    if (!PlatformClose(m_Threads[i]))
       {
       m_ExceptionOccurred = true;
       }
-    delete m_ThreadSemaphores[i].first;
     }
 }
 
@@ -205,24 +203,8 @@ ThreadIdType
 ThreadPool
 ::GetNumberOfCurrentlyIdleThreads()
 {
-  ThreadIdType count = 0;
-  try
-    {
-    itkDebugMacro(<< "GetNumberOfCurrentlyIdleThreads");
-
-    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-    if (m_IdleThreadIndices.size()>m_WorkQueue.size())
-      {
-      count = m_IdleThreadIndices.size() - m_WorkQueue.size();
-      }
-    }
-  catch( std::exception & itkDebugStatement( e ) )
-    {
-    m_ExceptionOccurred = true;
-    itkDebugMacro(<< "Exception occured in GetNumberOfCurrentlyIdleThreads()"
-                  << std::endl << e.what());
-    }
-  return count;
+  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
+  return GetGlobalDefaultNumberOfThreads() - m_WorkQueue.size(); // lousy approximation
 }
 
 ThreadPool
@@ -237,7 +219,7 @@ ThreadPool
   this->m_ScheduleForDestruction = true;
   }
 
-  for (ThreadIdType i = 0; i < m_ThreadSemaphores.size(); i++) //add dummy jobs for
+  for (ThreadIdType i = 0; i < m_Threads.size(); i++) //add dummy jobs for
     {
     ThreadJob threadJob; //dummy job to cleanly exit the thread
     ThreadJobIdType jobId = this->AddWork(threadJob);
@@ -260,6 +242,7 @@ ThreadPool
     WaitForJob(jobs[i]); //cleans up the semaphore
     }
   DeleteThreads();
+  PlatformDelete(m_ThreadsSemaphore);
 }
 
 void
@@ -291,33 +274,20 @@ ThreadPool
   threadJob.m_Id = m_IdCounter++;
   m_WorkQueue.push_back(threadJob);
   PlatformCreate(m_JobSemaphores[threadJob.m_Id]);
-  if (!m_IdleThreadIndices.empty())
-    {
-    size_t tId = *m_IdleThreadIndices.begin();
-    m_IdleThreadIndices.erase(m_IdleThreadIndices.begin());
-    PlatformSignal(m_ThreadSemaphores[tId].second);
-  }
+  PlatformSignal(m_ThreadsSemaphore);
   return threadJob.m_Id;
 }
 
 
 void *
 ThreadPool
-::ThreadExecute(void *param)
+::ThreadExecute(void *)
 {
-  ThreadIdType *myIdPtr = reinterpret_cast<ThreadIdType *>(param);
-  ThreadIdType myId = *myIdPtr;
   Pointer threadPool = GetInstance();
-  Semaphore *semaphore;
-  {
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  semaphore = &threadPool->m_ThreadSemaphores[myId].second;
-  delete myIdPtr;
-  }
 
   while (!threadPool->m_ScheduleForDestruction)
     {
-    threadPool->PlatformWait(*semaphore);
+    threadPool->PlatformWait(threadPool->m_ThreadsSemaphore);
     if (threadPool->m_ScheduleForDestruction)
       {
       return ITK_NULLPTR;
@@ -328,7 +298,6 @@ ThreadPool
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
     if (threadPool->m_WorkQueue.empty()) //another thread stole work meant for me
       {
-      threadPool->m_IdleThreadIndices.insert(myId);
       continue; //does not happen often
       }
     job = threadPool->m_WorkQueue.front();
@@ -357,11 +326,6 @@ ThreadPool
         }
 
     } while (repeat); //ending the loop iteration releases the lock
-
-    {
-    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-    threadPool->m_IdleThreadIndices.insert(myId);
-    }
   }
   return ITK_NULLPTR;
 }
