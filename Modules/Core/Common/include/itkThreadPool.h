@@ -21,24 +21,6 @@
 #include "itkConfigure.h"
 #include "itkIntTypes.h"
 
-#include "itkThreadSupport.h"
-
-#if defined(ITK_USE_PTHREADS)
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h> // for sleep
-#elif defined(ITK_USE_WIN32_THREADS)
-#include <windows.h>
-#endif
-
-#if defined __APPLE__
-#include <mach/mach_init.h>
-#include <mach/mach_error.h>
-#include <mach/semaphore.h>
-#include <mach/task.h>
-#include <mach/task_info.h>
-#endif
-
 #include <map>
 #include <set>
 #include <deque>
@@ -79,15 +61,7 @@ public:
   /** local class typedefs. */
   typedef ThreadJob::JobIdType ThreadJobIdType;
 
-#if defined(ITK_USE_PTHREADS) && defined(__APPLE__)
-  typedef semaphore_t Semaphore;
-#elif defined(ITK_USE_WIN32_THREADS)
-  typedef HANDLE Semaphore;
-#elif defined(ITK_USE_PTHREADS)
-  typedef sem_t Semaphore;
-#else
-#error Unknown thread system!
-#endif
+  typedef ThreadJob::Semaphore Semaphore;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(ThreadPool, Object);
@@ -149,9 +123,6 @@ private:
 
   ThreadIdType m_ThreadCount;
 
-  /** Counter to assign job ids */
-  ThreadJobIdType m_IdCounter;
-
   /** Set if exception occurs */
   bool m_ExceptionOccurred;
 
@@ -160,16 +131,6 @@ private:
    * Filled by AddWork, emptied by ThreadExecute.
    */
   std::deque<ThreadJob> m_WorkQueue;
-
-
-  typedef std::map<ThreadJobIdType, Semaphore> JobSemaphoreMap;
-
-  /** Semaphores which allow waiting on jobs by jobId.
-   * Semaphores initialized by AddWork.
-   * Waited on and deleted by WaitForJob.
-   * Signaled upon completion from ThreadExecute.
-   */
-  JobSemaphoreMap m_JobSemaphores;
 
   /** When a thread is idle, it is waiting on m_ThreadsSemaphore.
   * AddWork signals this semaphore to resume a (random) thread.

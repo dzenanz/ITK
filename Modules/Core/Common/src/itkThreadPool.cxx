@@ -60,7 +60,6 @@ ThreadPool
 ::ThreadPool() :
   m_ScheduleForDestruction(false),
   m_ThreadCount(0),
-  m_IdCounter(1),
   m_ExceptionOccurred(false)
 {
   PlatformCreate(m_ThreadsSemaphore);
@@ -226,21 +225,6 @@ ThreadPool
     WaitForJob(jobId);
     }
 
-  {//block for mutex holder
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex); //collect ids of orphaned jobs
-  jobs.reserve(m_JobSemaphores.size());
-  JobSemaphoreMap::iterator it = m_JobSemaphores.begin();
-  for(; it!=m_JobSemaphores.end(); ++it)
-    {
-    jobs.push_back(it->first);
-    }
-  }
-
-  //now clean up any jobs not waited for by the caller
-  for (size_t i=0; i<jobs.size(); ++i)
-    {
-    WaitForJob(jobs[i]); //cleans up the semaphore
-    }
   DeleteThreads();
   PlatformDelete(m_ThreadsSemaphore);
 }
@@ -249,33 +233,25 @@ void
 ThreadPool
 ::WaitForJob(ThreadJobIdType jobId)
 {
-  JobSemaphoreMap::iterator it;
-  {
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  it = m_JobSemaphores.find(jobId);
-  if (it == m_JobSemaphores.end()) //WaitForJob was concurrent with the destructor
-    {
-    return;
-    }
-  }
-
-  PlatformWait(it->second);
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  PlatformDelete(it->second);
-  m_JobSemaphores.erase(it);
+  PlatformWait(*jobId);
+  PlatformDelete(*jobId);
+  delete jobId;
 }
 
 ThreadPool::ThreadJobIdType
 ThreadPool
 ::AddWork(ThreadJob &threadJob)
 {
+  Semaphore * jobSem = new Semaphore;
+  threadJob.m_Semaphore = jobSem;
+  {
+    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
+    m_WorkQueue.push_back(threadJob);
+  }
 
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  threadJob.m_Id = m_IdCounter++;
-  m_WorkQueue.push_back(threadJob);
-  PlatformCreate(m_JobSemaphores[threadJob.m_Id]);
+  PlatformCreate(*jobSem);
   PlatformSignal(m_ThreadsSemaphore);
-  return threadJob.m_Id;
+  return jobSem;
 }
 
 
@@ -309,8 +285,7 @@ ThreadPool
       {
       job.m_ThreadFunction(job.m_UserData); //execute the job, lock has been released
 
-      MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-      PlatformSignal(threadPool->m_JobSemaphores.at(job.m_Id));
+      PlatformSignal(*job.m_Semaphore);
 
       if (threadPool->m_ScheduleForDestruction)
         {
@@ -318,6 +293,8 @@ ThreadPool
         }
 
       repeat = false;
+
+      MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
       if (!threadPool->m_WorkQueue.empty()) //take the next job before releasing the lock
         {
         repeat = true;

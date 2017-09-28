@@ -391,9 +391,7 @@ MultiThreader
   ThreadJob threadJob;
   threadJob.m_ThreadFunction = (this->SingleMethodProxy);
   threadJob.m_UserData = (void *) threadInfo;
-  m_ThreadPool->AddWork(threadJob);
-  itkDebugMacro(<< std::endl << "Got handle :" << threadJob.m_Id);
-  return threadJob.m_Id;
+  return m_ThreadPool->AddWork(threadJob);
 }
 
 ITK_THREAD_RETURN_TYPE
