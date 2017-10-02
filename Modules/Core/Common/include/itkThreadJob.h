@@ -67,8 +67,6 @@ public:
 #error Unknown thread system!
 #endif
 
-  typedef Semaphore * JobIdType;
-
   ThreadJob() :
     m_ThreadFunction(ITK_NULLPTR),
     m_Semaphore(ITK_NULLPTR),

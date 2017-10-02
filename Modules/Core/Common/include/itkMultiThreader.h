@@ -140,6 +140,8 @@ public:
   /** Get the UseThreadPool flag*/
   itkGetMacro(UseThreadPool,bool);
 
+  typedef ThreadPool::Semaphore JobSemaphoreType;
+
   /** This is the structure that is passed to the thread that is
    * created from the SingleMethodExecute, MultipleMethodExecute or
    * the SpawnThread method. It is passed in as a void *, and it is up
@@ -162,6 +164,7 @@ public:
     MutexLock::Pointer ActiveFlagLock;
     void *UserData;
     ThreadFunctionType ThreadFunction;
+    JobSemaphoreType Semaphore;
     enum { SUCCESS, ITK_EXCEPTION, ITK_PROCESS_ABORTED_EXCEPTION, STD_EXCEPTION, UNKNOWN } ThreadExitCode;
     };
 
@@ -237,10 +240,8 @@ private:
    * exceptions thrown by the threads. */
   static ITK_THREAD_RETURN_TYPE SingleMethodProxy(void *arg);
 
-  typedef ThreadPool::ThreadJobIdType ThreadJobIdType;
-
   /** Assign work to a thread in the thread pool */
-  ThreadJobIdType ThreadPoolDispatchSingleMethodThread(ThreadInfoStruct *);
+  void ThreadPoolDispatchSingleMethodThread(ThreadInfoStruct *);
 
   /** spawn a new thread for the SingleMethod */
   ThreadProcessIdType SpawnDispatchSingleMethodThread(ThreadInfoStruct *);

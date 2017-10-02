@@ -230,7 +230,6 @@ void MultiThreader::SingleMethodExecute()
 {
   ThreadIdType        thread_loop = 0;
   ThreadProcessIdType process_id[ITK_MAX_THREADS];
-  ThreadJobIdType     job_id[ITK_MAX_THREADS];
 
   if( !m_SingleMethod )
     {
@@ -245,7 +244,6 @@ void MultiThreader::SingleMethodExecute()
   for( thread_loop = 1; thread_loop < m_NumberOfThreads; ++thread_loop )
     {
     process_id[thread_loop] = 0;
-    job_id[thread_loop] = 0;
     }
 
   // Spawn a set of threads through the SingleMethodProxy. Exceptions
@@ -261,14 +259,13 @@ void MultiThreader::SingleMethodExecute()
     {
     for( thread_loop = 1; thread_loop < m_NumberOfThreads; ++thread_loop )
       {
-      m_ThreadInfoArray[thread_loop].UserData    = m_SingleData;
+      m_ThreadInfoArray[thread_loop].UserData = m_SingleData;
       m_ThreadInfoArray[thread_loop].NumberOfThreads = m_NumberOfThreads;
       m_ThreadInfoArray[thread_loop].ThreadFunction = m_SingleMethod;
 
       if(this->m_UseThreadPool)
         {
-        job_id[thread_loop] =
-          this->ThreadPoolDispatchSingleMethodThread(&m_ThreadInfoArray[thread_loop]);
+        this->ThreadPoolDispatchSingleMethodThread(&m_ThreadInfoArray[thread_loop]);
         }
       else
         {
@@ -311,7 +308,7 @@ void MultiThreader::SingleMethodExecute()
         {
         if(this->m_UseThreadPool)
           {
-          m_ThreadPool->WaitForJob(job_id[thread_loop]);
+          m_ThreadPool->WaitForJob(m_ThreadInfoArray[thread_loop].Semaphore);
           }
         else
           {
@@ -347,7 +344,7 @@ void MultiThreader::SingleMethodExecute()
       {
       if(this->m_UseThreadPool)
         {
-        m_ThreadPool->WaitForJob(job_id[thread_loop]);
+        m_ThreadPool->WaitForJob(m_ThreadInfoArray[thread_loop].Semaphore);
         }
       else
         {
@@ -384,14 +381,15 @@ void MultiThreader::SingleMethodExecute()
     }
 }
 
-MultiThreader::ThreadJobIdType
+void
 MultiThreader
 ::ThreadPoolDispatchSingleMethodThread(MultiThreader::ThreadInfoStruct *threadInfo)
 {
   ThreadJob threadJob;
   threadJob.m_ThreadFunction = (this->SingleMethodProxy);
   threadJob.m_UserData = (void *) threadInfo;
-  return m_ThreadPool->AddWork(threadJob);
+  threadJob.m_Semaphore = &threadInfo->Semaphore;
+  m_ThreadPool->AddWork(threadJob);
 }
 
 ITK_THREAD_RETURN_TYPE

@@ -227,27 +227,23 @@ ThreadPool
 
 void
 ThreadPool
-::WaitForJob(ThreadJobIdType jobId)
+::WaitForJob(Semaphore& jobSemaphore)
 {
-  PlatformWait(*jobId);
-  PlatformDelete(*jobId);
-  delete jobId;
+  PlatformWait(jobSemaphore);
+  PlatformDelete(jobSemaphore);
 }
 
-ThreadPool::ThreadJobIdType
+void
 ThreadPool
-::AddWork(ThreadJob &threadJob)
+::AddWork(const ThreadJob& threadJob)
 {
-  Semaphore * jobSem = new Semaphore;
-  threadJob.m_Semaphore = jobSem;
   {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
     m_WorkQueue.push_back(threadJob);
   }
 
-  PlatformCreate(*jobSem);
+  PlatformCreate(*threadJob.m_Semaphore);
   PlatformSignal(m_ThreadsSemaphore);
-  return jobSem;
 }
 
 

@@ -58,9 +58,6 @@ public:
   typedef SmartPointer< Self >     Pointer;
   typedef SmartPointer<const Self> ConstPointer;
 
-  /** local class typedefs. */
-  typedef ThreadJob::JobIdType ThreadJobIdType;
-
   typedef ThreadJob::Semaphore Semaphore;
 
   /** Run-time type information (and related methods). */
@@ -76,9 +73,12 @@ public:
   static Pointer GetInstance();
 
   /** Add this job to the thread pool queue.
-   * Returns the Id which can be used for waiting for its completion.
+   * All data members of the ThreadJob must be filled.
+   * The semaphore pointer must point to a valid semaphore structure.
+   * AddWork will initialize that semaphore, and the invoker must pass it
+   * to WaitForJob in order to wait for the job's completion.
    */
-  ThreadJobIdType AddWork(ThreadJob &job);
+  void AddWork(const ThreadJob& job);
 
   /** Can call this method if we want to add extra threads to the pool. */
   void AddThreads(ThreadIdType count);
@@ -86,7 +86,7 @@ public:
   ThreadIdType GetNumberOfCurrentlyIdleThreads();
 
   /** This method blocks until the given (job) id has finished executing */
-  void WaitForJob(ThreadJobIdType jobId);
+  void WaitForJob(Semaphore& jobSemaphore);
 
   /** Platform specific number of threads */
   static ThreadIdType GetGlobalDefaultNumberOfThreadsByPlatform();
