@@ -211,8 +211,6 @@ ThreadPool
 {
   itkDebugMacro(<< std::endl << "Thread pool being destroyed" << std::endl);
 
-  std::vector<ThreadJobIdType> jobs(0);
-
   {//block for mutex holder
   MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
   this->m_ScheduleForDestruction = true;
@@ -220,9 +218,7 @@ ThreadPool
 
   for (ThreadIdType i = 0; i < m_Threads.size(); i++) //add dummy jobs for
     {
-    ThreadJob threadJob; //dummy job to cleanly exit the thread
-    ThreadJobIdType jobId = this->AddWork(threadJob);
-    WaitForJob(jobId);
+    PlatformSignal(m_ThreadsSemaphore);
     }
 
   DeleteThreads();
