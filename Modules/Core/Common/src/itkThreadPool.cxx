@@ -206,6 +206,12 @@ ThreadPool
   return GetGlobalDefaultNumberOfThreads() - m_WorkQueue.size(); // lousy approximation
 }
 
+ITK_THREAD_RETURN_TYPE
+noOperation(void *)
+{
+  return ITK_THREAD_RETURN_VALUE;
+}
+
 ThreadPool
 ::~ThreadPool()
 {
@@ -216,9 +222,21 @@ ThreadPool
   this->m_ScheduleForDestruction = true;
   }
 
-  for (ThreadIdType i = 0; i < m_Threads.size(); i++) //add dummy jobs for
+  //add dummy jobs for clean thread exit
+  std::vector<Semaphore> jobSem(m_Threads.size());
+  for (ThreadIdType i = 0; i < m_Threads.size(); i++)
     {
-    PlatformSignal(m_ThreadsSemaphore);
+    ThreadJob dummy;
+    dummy.m_ThreadFunction = &noOperation;
+    dummy.m_Semaphore = &jobSem[i];
+    dummy.m_UserData = ITK_NULLPTR; //makes dummy jobs easier to spot while debugging
+    AddWork(dummy);
+    //PlatformSignal(m_ThreadsSemaphore);
+    }
+
+  for (ThreadIdType i = 0; i < m_WorkQueue.size(); i++) //clean up any un-executed dummy jobs
+    {
+    PlatformDelete(*m_WorkQueue[i].m_Semaphore);
     }
 
   DeleteThreads();
@@ -256,45 +274,21 @@ ThreadPool
   while (!threadPool->m_ScheduleForDestruction)
     {
     threadPool->PlatformWait(threadPool->m_ThreadsSemaphore);
-    if (threadPool->m_ScheduleForDestruction)
-      {
-      return ITK_NULLPTR;
-      }
 
     ThreadJob job;
     {
     MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
     if (threadPool->m_WorkQueue.empty()) //another thread stole work meant for me
       {
+      itkGenericExceptionMacro(<< "Work queue is empty!");
       continue; //does not happen often
       }
     job = threadPool->m_WorkQueue.front();
     threadPool->m_WorkQueue.pop_front();
     } //releases the lock
 
-    bool repeat = false;
-    do
-      {
-      job.m_ThreadFunction(job.m_UserData); //execute the job, lock has been released
-
-      PlatformSignal(*job.m_Semaphore);
-
-      if (threadPool->m_ScheduleForDestruction)
-        {
-        return ITK_NULLPTR;
-        }
-
-      repeat = false;
-
-      MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-      if (!threadPool->m_WorkQueue.empty()) //take the next job before releasing the lock
-        {
-        repeat = true;
-        job = threadPool->m_WorkQueue.front();
-        threadPool->m_WorkQueue.pop_front();
-        }
-
-    } while (repeat); //ending the loop iteration releases the lock
+    job.m_ThreadFunction(job.m_UserData); //execute the job, lock has been released
+    PlatformSignal(*job.m_Semaphore);
   }
   return ITK_NULLPTR;
 }
