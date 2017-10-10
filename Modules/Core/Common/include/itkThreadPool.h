@@ -23,7 +23,7 @@
 
 #include <map>
 #include <set>
-#include <deque>
+#include "concurrentqueue.h"
 
 #include "itkThreadJob.h"
 #include "itkObject.h"
@@ -127,10 +127,9 @@ private:
   bool m_ExceptionOccurred;
 
   /** This is a list of jobs(ThreadJob) submitted to the thread pool.
-   * This is the only place where the jobs are submitted.
    * Filled by AddWork, emptied by ThreadExecute.
    */
-  std::deque<ThreadJob> m_WorkQueue;
+  moodycamel::ConcurrentQueue<ThreadJob> m_WorkQueue;
 
   /** When a thread is idle, it is waiting on m_ThreadsSemaphore.
   * AddWork signals this semaphore to resume a (random) thread.

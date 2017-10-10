@@ -202,8 +202,7 @@ ThreadIdType
 ThreadPool
 ::GetNumberOfCurrentlyIdleThreads()
 {
-  MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-  return GetGlobalDefaultNumberOfThreads() - m_WorkQueue.size(); // lousy approximation
+  return GetGlobalDefaultNumberOfThreads() - m_WorkQueue.size_approx(); // lousy approximation
 }
 
 ITK_THREAD_RETURN_TYPE
@@ -223,10 +222,10 @@ ThreadPool
   }
 
   //add dummy jobs for clean thread exit
+  ThreadJob dummy;
   std::vector<Semaphore> jobSem(m_Threads.size());
   for (ThreadIdType i = 0; i < m_Threads.size(); i++)
     {
-    ThreadJob dummy;
     dummy.m_ThreadFunction = &noOperation;
     dummy.m_Semaphore = &jobSem[i];
     dummy.m_UserData = ITK_NULLPTR; //makes dummy jobs easier to spot while debugging
@@ -234,10 +233,14 @@ ThreadPool
     //PlatformSignal(m_ThreadsSemaphore);
     }
 
-  for (ThreadIdType i = 0; i < m_WorkQueue.size(); i++) //clean up any un-executed dummy jobs
+  for (ThreadIdType i = 0; i < m_WorkQueue.size_approx(); i++) //clean up any un-executed dummy jobs
     {
-    PlatformDelete(*m_WorkQueue[i].m_Semaphore);
-    }
+    if (!m_WorkQueue.try_dequeue(dummy))
+      {
+      itkGenericExceptionMacro(<< "Work queue is empty!");
+      }
+    PlatformDelete(*dummy.m_Semaphore);
+  }
 
   DeleteThreads();
   PlatformDelete(m_ThreadsSemaphore);
@@ -255,10 +258,7 @@ void
 ThreadPool
 ::AddWork(const ThreadJob& threadJob)
 {
-  {
-    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-    m_WorkQueue.push_back(threadJob);
-  }
+  m_WorkQueue.enqueue(threadJob);
 
   PlatformCreate(*threadJob.m_Semaphore);
   PlatformSignal(m_ThreadsSemaphore);
@@ -276,18 +276,13 @@ ThreadPool
     threadPool->PlatformWait(threadPool->m_ThreadsSemaphore);
 
     ThreadJob job;
-    {
-    MutexLockHolder<SimpleFastMutexLock> mutexHolder(m_Mutex);
-    if (threadPool->m_WorkQueue.empty()) //another thread stole work meant for me
+    if (!threadPool->m_WorkQueue.try_dequeue(job)) //another thread stole work meant for me
       {
       itkGenericExceptionMacro(<< "Work queue is empty!");
       continue; //does not happen often
       }
-    job = threadPool->m_WorkQueue.front();
-    threadPool->m_WorkQueue.pop_front();
-    } //releases the lock
 
-    job.m_ThreadFunction(job.m_UserData); //execute the job, lock has been released
+    job.m_ThreadFunction(job.m_UserData); //execute the job
     PlatformSignal(*job.m_Semaphore);
   }
   return ITK_NULLPTR;
