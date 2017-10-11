@@ -276,9 +276,8 @@ ThreadPool
     threadPool->PlatformWait(threadPool->m_ThreadsSemaphore);
 
     ThreadJob job;
-    if (!threadPool->m_WorkQueue.try_dequeue(job)) //another thread stole work meant for me
+    while (!threadPool->m_WorkQueue.try_dequeue(job))
       {
-      itkGenericExceptionMacro(<< "Work queue is empty!");
       continue; //does not happen often
       }
 
