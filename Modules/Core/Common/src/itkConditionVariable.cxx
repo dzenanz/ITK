@@ -16,11 +16,30 @@
  *
  *=========================================================================*/
 #include "itkConditionVariable.h"
+#include <type_traits>
 
-#if defined(ITK_USE_PTHREADS)
-#include "itkConditionVariablePThreads.cxx"
-#elif defined(ITK_USE_WIN32_THREADS)
-#include "itkConditionVariableWinThreads.cxx"
-#else
-#include "itkConditionVariableNoThreads.cxx"
-#endif
+namespace itk
+{
+ConditionVariable::ConditionVariable() {}
+
+ConditionVariable::~ConditionVariable() {}
+
+void ConditionVariable::Signal()
+{
+  m_ConditionVariable.notify_one();
+}
+
+void ConditionVariable::Broadcast()
+{
+  m_ConditionVariable.notify_all();
+}
+
+void ConditionVariable::Wait(SimpleMutexLock *mutex)
+{
+  static_assert(std::is_same<MutexType, std::mutex>::value,
+    "std::unique_lock only works with std::mutex");
+  std::unique_lock<std::mutex> lock(mutex->GetMutexLock(), std::adopt_lock);
+  m_ConditionVariable.wait(lock);
+  lock.release();
+}
+} //end of namespace itk

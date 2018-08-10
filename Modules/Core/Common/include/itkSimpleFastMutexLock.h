@@ -15,61 +15,23 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-/*=========================================================================
- *
- *  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
- *
- *  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- *
- *  For complete copyright, license and disclaimer of warranty information
- *  please refer to the NOTICE file at the top of the ITK source tree.
- *
- *=========================================================================*/
+
 #ifndef itkSimpleFastMutexLock_h
 #define itkSimpleFastMutexLock_h
 
-#include "itkMacro.h"
-#include "itkThreadSupport.h"
+#include "itkMutexLock.h"
 
 namespace itk
 {
 
 /** \class SimpleFastMutexLock
- * \brief Critical section locking class that can be allocated on the stack.
+ * \brief Since ITK 5.0, a synonim for SimpleMutexLock.
  *
- * SimpleFastMutexLock is used by FastMutexLock to perform mutex locking.
- * SimpleFastMutexLock is not a subclass of Object and is designed to be
- * allocated on the stack.
  *
  * \ingroup OSSystemObjects
  * \ingroup ITKCommon
  */
+  using SimpleFastMutexLock = SimpleMutexLock;
 
-// Critical Section object that is not a itkObject.
-class ITKCommon_EXPORT SimpleFastMutexLock
-{
-public:
-  /** Standard class type aliases.  */
-  using Self = SimpleFastMutexLock;
-
-  /** Constructor and destructor left public purposely because of stack
-    allocation. */
-  SimpleFastMutexLock();
-  ~SimpleFastMutexLock();
-
-  /** Lock access. */
-  void Lock() const;
-
-  /** Non-blocking Lock access.
-   \return bool - true if lock is captured, false if it was already heald by someone else.
-   */
-  bool TryLock() const;
-
-  /** Unlock access. */
-  void Unlock() const;
-
-protected:
-  mutable FastMutexType m_FastMutexLock;
-};
 } //end itk namespace
 #endif

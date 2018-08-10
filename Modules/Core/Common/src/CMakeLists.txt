@@ -100,7 +100,6 @@ set(ITKCommon_SRCS
   itkImageRegionSplitterSlowDimension.cxx
   itkImageRegionSplitterDirection.cxx
   itkImageRegionSplitterMultidimensional.cxx
-  itkFastMutexLock.cxx
   itkVersion.cxx
   itkNumericTraitsRGBAPixel.cxx
   itkRealTimeClock.cxx
@@ -129,7 +128,6 @@ set(ITKCommon_SRCS
   itkObjectFactoryBase.cxx
   itkFloatingPointExceptions.cxx
   itkOutputWindow.cxx
-  itkSimpleFastMutexLock.cxx
   itkNumericTraitsDiffusionTensor3DPixel.cxx
   itkEquivalencyTable.cxx
   itkXMLFileOutputWindow.cxx

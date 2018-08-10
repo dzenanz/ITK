@@ -36,16 +36,15 @@
 #include "itkWindows.h"
 #include <winbase.h>
 #endif
+#include <mutex>
+#include <condition_variable>
 
 
 namespace itk
 {
-  /** Platform specific type alias for simple types
-   */
+  /** Platform specific type alias for simple types */
 #if defined(ITK_USE_PTHREADS)
   constexpr std::size_t ITK_MAX_THREADS = 128;
-  using MutexType = pthread_mutex_t;
-  using FastMutexType = pthread_mutex_t;
   using ThreadFunctionType = void *(*)(void *);
   using ThreadProcessIdType = pthread_t;
   constexpr ThreadProcessIdType ITK_DEFAULT_THREAD_ID = 0;
@@ -56,8 +55,6 @@ namespace itk
 #elif defined(ITK_USE_WIN32_THREADS)
 
   constexpr std::size_t ITK_MAX_THREADS = 128;
-  using MutexType = HANDLE;
-  using FastMutexType = CRITICAL_SECTION;
   typedef unsigned(__stdcall * ThreadFunctionType)(void *);
   using ThreadProcessIdType = HANDLE;
   static const ThreadProcessIdType ITK_DEFAULT_THREAD_ID = INVALID_HANDLE_VALUE;
@@ -68,8 +65,6 @@ namespace itk
 #else
 
   constexpr std::size_t ITK_MAX_THREADS = 1;
-  using MutexType = int;
-  using FastMutexType = int;
   typedef void ( *ThreadFunctionType )(void *);
   using ThreadProcessIdType = int;
   constexpr ThreadProcessIdType ITK_DEFAULT_THREAD_ID = 0;
@@ -78,34 +73,12 @@ namespace itk
   using ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION = itk::ITK_THREAD_RETURN_TYPE;
 #endif
 
-
-  /** Platform specific Conditional Variable type alias
-   */
-#if defined(ITK_USE_PTHREADS)
-  typedef struct {
-  pthread_cond_t m_ConditionVariable;
-  } ConditionVariableType;
-#elif defined(ITK_USE_WIN32_THREADS)
-  typedef struct {
-  int m_NumberOfWaiters;                   // number of waiting threads
-  CRITICAL_SECTION m_NumberOfWaitersLock;  // Serialize access to
-                                           // m_NumberOfWaiters
-
-  HANDLE m_Semaphore;                      // Semaphore to queue threads
-  HANDLE m_WaitersAreDone;                 // Auto-reset event used by the
-                                           // broadcast/signal thread to
-                                           // wait for all the waiting
-                                           // threads to wake up and
-                                           // release the semaphore
-
-  int m_WasBroadcast;                      // Used as boolean. Keeps track of whether
-                                           // we were broadcasting or signaling
-  } ConditionVariableType;
-#else
-  using ConditionVariableType = struct { };
-#endif
+  using MutexType = std::mutex;
+  using FastMutexType = std::mutex;
+  using ConditionVariableType = std::condition_variable;
 
 }
+
 
 // Compile-time conditional code for different threading models
 // require that some items are #defines (always global scope) or

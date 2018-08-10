@@ -15,16 +15,7 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-/*=========================================================================
- *
- *  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
- *
- *  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- *
- *  For complete copyright, license and disclaimer of warranty information
- *  please refer to the NOTICE file at the top of the ITK source tree.
- *
- *=========================================================================*/
+
 #ifndef itkMutexLock_h
 #define itkMutexLock_h
 
@@ -34,13 +25,14 @@
 
 namespace itk
 {
-
 /** \class SimpleMutexLock
  * \brief Simple mutual exclusion locking class.
-
+ *
  * SimpleMutexLock allows the locking of variables which are accessed
- * through different threads.  This header file also defines
- * SimpleMutexLock which is not a subclass of Object.
+ * through different threads. This mutex is re-entrant (recursive).
+ *
+ * This class is inefficient, and is retained for backwards compatbility.
+ * It is identical to std::recursive_mutex in functionality.
  *
  * \ingroup OSSystemObjects
  * \ingroup ITKCommon
@@ -48,12 +40,14 @@ namespace itk
 class ITKCommon_EXPORT SimpleMutexLock
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(SimpleMutexLock);
+
   /** Standard class type aliases.  */
   using Self = SimpleMutexLock;
 
   /** Constructor and destructor left public purposely. */
-  SimpleMutexLock();
-  virtual ~SimpleMutexLock();
+  SimpleMutexLock() = default;
+  virtual ~SimpleMutexLock() = default;
 
   /** Methods for creation and destruction through the object factory. */
   static SimpleMutexLock * New();
@@ -64,25 +58,29 @@ public:
   virtual const char * GetNameOfClass() { return "itkSimpleMutexLock"; }
 
   /** Lock the MutexLock. */
-  void Lock();
+  void Lock()
+  {
+    m_MutexLock.lock();
+  }
 
   /** Non-blocking Lock access.
-   \return bool - true if lock is captured, false if it was already heald by someone else.
+   \return bool - true if lock is captured, false if it was already held by someone else.
    */
-  bool TryLock();
+  bool TryLock()
+  {
+    return m_MutexLock.try_lock();
+  }
 
   /** Unlock the MutexLock. */
-  void Unlock();
+  void Unlock()
+  {
+    m_MutexLock.unlock();
+  }
 
   /** Access the MutexType member variable from outside this class */
   MutexType & GetMutexLock()
   {
     return m_MutexLock;
-  }
-
-  MutexType GetMutexLock() const
-  {
-    return *( const_cast< MutexType * >( &m_MutexLock ) );
   }
 
 protected:
@@ -93,8 +91,9 @@ protected:
  * \brief Mutual exclusion locking class.
  *
  * MutexLock allows the locking of variables which are accessed
- * through different threads.  This header file also defines
- * SimpleMutexLock which is not a subclass of itkObject.
+ * through different threads. This mutex is re-entrant (recursive).
+ * This header file also defines SimpleMutexLock which is
+ * not a subclass of itkObject.
  *
  * \ingroup OSSystemObjects
  * \ingroup ITKCommon
