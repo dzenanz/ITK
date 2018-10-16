@@ -58,7 +58,6 @@ set(ITKCommon_SRCS
   itkLoggerOutput.cxx
   itkProgressAccumulator.cxx
   itkNumericTraits.cxx
-  itkMutexLock.cxx
   itkHexahedronCellTopology.cxx
   itkIndent.cxx
   itkEventObject.cxx
@@ -72,9 +71,7 @@ set(ITKCommon_SRCS
   itkTextOutput.cxx
   itkNumericTraitsTensorPixel2.cxx
   itkNumericTraitsFixedArrayPixel2.cxx
-  itkConditionVariable.cxx
   itkProcessObject.cxx
-  itkBarrier.cxx
   itkSpatialOrientationAdapter.cxx
   itkRealTimeInterval.cxx
   itkOctreeNode.cxx

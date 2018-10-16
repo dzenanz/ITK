@@ -48,7 +48,6 @@ itkPhasedArray3DSpecialCoordinatesImageTest.cxx
 itkPriorityQueueTest.cxx
 itkFileOutputWindowTest.cxx
 itkSymmetricEigenAnalysisTest.cxx
-itkSTLThreadTest.cxx
 itkStreamingImageFilterTest.cxx
 itkStreamingImageFilterTest2.cxx
 itkStreamingImageFilterTest3.cxx
@@ -86,7 +85,6 @@ itkModifiedTimeTest.cxx
 itkMultipleLogOutputTest.cxx
 itkVectorTest.cxx
 itkImageTest.cxx
-itkConditionVariableTest.cxx
 itkPointSetTest.cxx
 itkBresenhamLineTest.cxx
 itkSparseFieldLayerTest.cxx
@@ -128,7 +126,6 @@ itkVariableLengthVectorTest.cxx
 itkSpatialFunctionTest.cxx
 itkPeriodicBoundaryConditionTest.cxx
 itkSmartPointerTest.cxx
-itkBarrierTest.cxx
 itkVariableSizeMatrixTest.cxx
 itkConicShellInteriorExteriorSpatialFunctionTest.cxx
 itkEllipsoidInteriorExteriorSpatialFunctionTest.cxx
@@ -183,23 +180,15 @@ itkImageToImageToleranceTest.cxx
 itkImageRegionSplitterSlowDimensionTest.cxx
 itkImageRegionSplitterDirectionTest.cxx
 itkImageRegionSplitterMultidimensionalTest.cxx
-itkSimpleFastMutexLockTest.cxx
 itkMetaDataObjectTest.cxx
 # itkVectorMultiplyTest.cxx
 itkThreadPoolTest.cxx
-itkAtomicIntTest.cxx
 )
 if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
   list(APPEND ITKCommon2Tests itkDownCastTest.cxx)
 endif()
-if(NOT ITK_LEGACY_REMOVE)
-  list(APPEND ITKCommon2Tests itkSpawnThreadTest.cxx)
-endif()
 
-# Notes:
-# (1) Tests are arbitrarly split into two drivers to avoid memory issues.
-# (2) itkFloatingPointExceptionsExtern.cxx is associated with the first driver.
-#     only because it is indeed to build itkFloatingPointExceptionsTest.
+# Note: Tests are arbitrarly split into two drivers to avoid memory issues.
 CreateTestDriver(ITKCommon1 "${ITKCommon-Test_LIBRARIES}" "${ITKCommon1Tests}" itkFloatingPointExceptionsExtern.cxx)
 CreateTestDriver(ITKCommon2 "${ITKCommon-Test_LIBRARIES}" "${ITKCommon2Tests}" itkFloatingPointExceptionsExtern.cxx)
 
@@ -271,11 +260,6 @@ itk_add_test(NAME itkArrayTest COMMAND ITKCommon1TestDriver itkArrayTest)
 itk_add_test(NAME itkMersenneTwisterRandomVariateGeneratorTest COMMAND ITKCommon1TestDriver itkMersenneTwisterRandomVariateGeneratorTest)
 itk_add_test(NAME itkArray2DTest COMMAND ITKCommon1TestDriver itkArray2DTest)
 itk_add_test(NAME itkAutoPointerTest COMMAND ITKCommon2TestDriver itkAutoPointerTest)
-if(NOT MINGW)
-itk_add_test(NAME itkBarrierTest COMMAND ITKCommon2TestDriver itkBarrierTest)
-itk_add_test(NAME itkBarrierTest107 COMMAND ITKCommon2TestDriver itkBarrierTest 107)
-itk_add_test(NAME itkConditionVariableTest COMMAND ITKCommon1TestDriver itkConditionVariableTest)
-endif()
 itk_add_test(NAME itkTimeStampTest COMMAND ITKCommon2TestDriver itkTimeStampTest)
 itk_add_test(NAME itkBoundingBoxTest COMMAND ITKCommon1TestDriver itkBoundingBoxTest)
 itk_add_test(NAME itkBoundaryConditionTest COMMAND ITKCommon1TestDriver itkBoundaryConditionTest)
@@ -595,19 +579,9 @@ itk_add_test(NAME itkRegionSplitterSlowDimensionTest COMMAND ITKCommon2TestDrive
 itk_add_test(NAME itkRegionSplitterDirectionTest COMMAND ITKCommon2TestDriver itkImageRegionSplitterDirectionTest)
 itk_add_test(NAME itkRegionSplitterMultidimensionalTest COMMAND ITKCommon2TestDriver itkImageRegionSplitterMultidimensionalTest)
 
-itk_add_test(NAME itkSimpleFastMutexLockTest COMMAND ITKCommon2TestDriver itkSimpleFastMutexLockTest)
-# short timeout because failing test will hang and test is quite small
-set_tests_properties(itkSimpleFastMutexLockTest PROPERTIES TIMEOUT 60)
-
 itk_add_test(NAME itkMetaDataObjectTest COMMAND ITKCommon2TestDriver itkMetaDataObjectTest)
 
 itk_add_test(NAME itkThreadPoolTest COMMAND ITKCommon2TestDriver itkThreadPoolTest 100)
-
-if(NOT ITK_LEGACY_REMOVE)
-  itk_add_test(NAME itkSpawnThreadTest COMMAND ITKCommon2TestDriver itkSpawnThreadTest 100)
-endif()
-
-itk_add_test(NAME itkAtomicIntTest COMMAND ITKCommon2TestDriver itkAtomicIntTest)
 
 if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
   macro(BuildClientTestLibrary _name _type)

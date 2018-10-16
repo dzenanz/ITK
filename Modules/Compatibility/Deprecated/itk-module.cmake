@@ -4,10 +4,8 @@ removed from the toolkit.")
 itk_module(ITKDeprecated
   PRIVATE_DEPENDS
     ITKCommon
-    ITKIOImageBase
-    ITKZLIB
   COMPILE_DEPENDS
-    ITKMesh
+    # ITKMesh
   TEST_DEPENDS
     ITKTestKernel
   EXCLUDE_FROM_DEFAULT
