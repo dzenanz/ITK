@@ -750,8 +750,8 @@ protected:
      *  BUT also by the thread's neighbors. So they are NOT truly "local" data. */
     int m_Semaphore[2];
 
-    SimpleMutexLock            m_Lock[2];
-    ConditionVariable::Pointer m_Condition[2];
+    std::mutex              m_Lock[2];
+    std::condition_variable m_Condition[2];
 
     /** Indicates whether to use m_Semaphore[0] or m_Semaphore[1] for
       signalling/waiting */

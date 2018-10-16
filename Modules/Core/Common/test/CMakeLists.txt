@@ -48,6 +48,7 @@ itkPhasedArray3DSpecialCoordinatesImageTest.cxx
 itkPriorityQueueTest.cxx
 itkFileOutputWindowTest.cxx
 itkSymmetricEigenAnalysisTest.cxx
+itkSTLThreadTest.cxx
 itkStreamingImageFilterTest.cxx
 itkStreamingImageFilterTest2.cxx
 itkStreamingImageFilterTest3.cxx

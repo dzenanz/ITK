@@ -4,7 +4,6 @@ itkAtomicIntTest.cxx
 itkConditionVariableTest.cxx
 itkSimpleFastMutexLockTest.cxx
 itkSpawnThreadTest.cxx
-itkSTLThreadTest.cxx
 )
 
 CreateTestDriver(ITKDeprecated "${ITKDeprecated-Test_LIBRARIES}" "${ITKDeprecatedTests}")
@@ -23,4 +22,3 @@ itk_add_test(NAME itkSimpleFastMutexLockTest COMMAND ITKDeprecatedTestDriver itk
 set_tests_properties(itkSimpleFastMutexLockTest PROPERTIES TIMEOUT 60)
 
 itk_add_test(NAME itkSpawnThreadTest COMMAND ITKDeprecatedTestDriver itkSpawnThreadTest 100)
-itk_add_test(NAME itkSTLThreadTest COMMAND ITKDeprecatedTestDriver itkSTLThreadTest)
