@@ -126,6 +126,7 @@ itkVariableLengthVectorTest.cxx
 itkSpatialFunctionTest.cxx
 itkPeriodicBoundaryConditionTest.cxx
 itkSmartPointerTest.cxx
+itkBarrierTest.cxx
 itkVariableSizeMatrixTest.cxx
 itkConicShellInteriorExteriorSpatialFunctionTest.cxx
 itkEllipsoidInteriorExteriorSpatialFunctionTest.cxx
@@ -136,6 +137,7 @@ itkConstNeighborhoodIteratorTest.cxx
 itkShapedNeighborhoodIteratorTest.cxx
 itkMatrixTest.cxx
 itkAutoPointerTest.cxx
+itkBarrierTest.cxx
 itkNeighborhoodIteratorTest.cxx
 itkLoggerManagerTest.cxx
 itkBSplineInterpolationWeightFunctionTest.cxx
@@ -260,6 +262,10 @@ itk_add_test(NAME itkArrayTest COMMAND ITKCommon1TestDriver itkArrayTest)
 itk_add_test(NAME itkMersenneTwisterRandomVariateGeneratorTest COMMAND ITKCommon1TestDriver itkMersenneTwisterRandomVariateGeneratorTest)
 itk_add_test(NAME itkArray2DTest COMMAND ITKCommon1TestDriver itkArray2DTest)
 itk_add_test(NAME itkAutoPointerTest COMMAND ITKCommon2TestDriver itkAutoPointerTest)
+if(NOT MINGW)
+itk_add_test(NAME itkBarrierTest COMMAND ITKCommon2TestDriver itkBarrierTest)
+itk_add_test(NAME itkBarrierTest107 COMMAND ITKCommon2TestDriver itkBarrierTest 107)
+endif()
 itk_add_test(NAME itkTimeStampTest COMMAND ITKCommon2TestDriver itkTimeStampTest)
 itk_add_test(NAME itkBoundingBoxTest COMMAND ITKCommon1TestDriver itkBoundingBoxTest)
 itk_add_test(NAME itkBoundaryConditionTest COMMAND ITKCommon1TestDriver itkBoundaryConditionTest)

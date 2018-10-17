@@ -72,6 +72,7 @@ set(ITKCommon_SRCS
   itkNumericTraitsTensorPixel2.cxx
   itkNumericTraitsFixedArrayPixel2.cxx
   itkProcessObject.cxx
+  itkBarrier.cxx
   itkSpatialOrientationAdapter.cxx
   itkRealTimeInterval.cxx
   itkOctreeNode.cxx

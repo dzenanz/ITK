@@ -1,7 +1,6 @@
 itk_module_test()
 set(ITKDeprecatedTests
 itkAtomicIntTest.cxx
-itkBarrierTest.cxx
 itkConditionVariableTest.cxx
 itkSimpleFastMutexLockTest.cxx
 itkSpawnThreadTest.cxx
@@ -16,8 +15,6 @@ set(TEMP ${ITK_TEST_OUTPUT_DIR})
 itk_add_test(NAME itkAtomicIntTest COMMAND ITKDeprecatedTestDriver itkAtomicIntTest)
 
 if(NOT MINGW)
-itk_add_test(NAME itkBarrierTest COMMAND ITKDeprecatedTestDriver itkBarrierTest)
-itk_add_test(NAME itkBarrierTest107 COMMAND ITKDeprecatedTestDriver itkBarrierTest 107)
 itk_add_test(NAME itkConditionVariableTest COMMAND ITKDeprecatedTestDriver itkConditionVariableTest)
 endif()
 

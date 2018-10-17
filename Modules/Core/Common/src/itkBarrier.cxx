@@ -22,13 +22,13 @@ namespace itk
 Barrier::Barrier() :
   m_NumberArrived(0),
   m_NumberExpected(0),
-  m_ConditionVariable( ConditionVariable::New() ),
-  m_Mutex()
+  m_Generation(0)
 {
 }
 
 Barrier::~Barrier() = default;
 
+#ifndef ITK_LEGACY_REMOVE
 void Barrier::Initialize(unsigned int n)
 {
   m_NumberExpected = n;
@@ -36,19 +36,23 @@ void Barrier::Initialize(unsigned int n)
 
 void Barrier::Wait()
 {
-  m_Mutex.Lock();
-  m_NumberArrived++;
+  std::unique_lock< std::mutex > lockHolder{ m_Mutex };
+  unsigned  lGeneration = m_Generation;
+  ++m_NumberArrived;
   if ( m_NumberArrived == m_NumberExpected )
     {
     // Clear all blocked threads
+    ++m_Generation;
     m_NumberArrived = 0;
-    m_ConditionVariable->Broadcast();
+    m_ConditionVariable.notify_all();
     }
   else
     {
     // Block this thread
-    m_ConditionVariable->Wait(&m_Mutex);
+    m_ConditionVariable.wait( lockHolder, [this, lGeneration]
+        { return lGeneration != m_Generation; } );
     }
-  m_Mutex.Unlock();
 }
+#endif // ! ITK_LEGACY_REMOVE
+
 } // end namespace itk

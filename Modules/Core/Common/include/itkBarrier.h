@@ -18,7 +18,10 @@
 #ifndef itkBarrier_h
 #define itkBarrier_h
 
-#include "itkConditionVariable.h"
+#include "itkLightObject.h"
+#include "itkObjectFactory.h"
+#include <condition_variable>
+#include <mutex>
 
 namespace itk
 {
@@ -38,6 +41,8 @@ namespace itk
  * barrier as the argument.
  *
  * NOTE: This class is only compatible with PlatformMultiThreader!
+ *
+ * NOTE: This class is deprecated since ITK 5.0!
  *
  * \ingroup ITKCommon
  */
@@ -60,21 +65,22 @@ public:
   /** Creates a new system variable used to implement the barrier.  The
       argument to this method is the number of threads that must Wait() on the
       barrier before it is cleared. */
-  void Initialize(unsigned int);
+  itkLegacyMacro( void Initialize(unsigned int) );
 
   /** A thread calling this method waits until m_NumberOfThreads have called
    *  Wait() on the barrier.  When the final expected thread calls Wait(), all
    *  threads are released. */
-  void Wait();
+  itkLegacyMacro( void Wait() );
 
 private:
   Barrier();
   ~Barrier() override;
 
-  unsigned int               m_NumberArrived;
-  unsigned int               m_NumberExpected;
-  ConditionVariable::Pointer m_ConditionVariable;
-  SimpleMutexLock            m_Mutex;
+  unsigned int            m_NumberArrived;
+  unsigned int            m_NumberExpected;
+  unsigned int            m_Generation; // Allows successive waits
+  std::condition_variable m_ConditionVariable;
+  std::mutex              m_Mutex;
 };
 } // end namespace itk
 
