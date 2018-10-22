@@ -8,7 +8,7 @@ itk_module(ITKDeprecated
     # ITKMesh
   TEST_DEPENDS
     ITKTestKernel
-  EXCLUDE_FROM_DEFAULT
+  # EXCLUDE_FROM_DEFAULT # If ITKV4_COMPATIBILITY is set to On, we most likely want this module.
   DESCRIPTION
     "${DOCUMENTATION}"
 )
