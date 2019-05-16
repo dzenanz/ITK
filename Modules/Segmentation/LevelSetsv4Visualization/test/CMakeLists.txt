@@ -15,8 +15,15 @@ itkVTKVisualize3DWhitakerLevelSetTest
 itkVTKVisualize2DLevelSetAsElevationMapTest
 )
 
-set(ITKLevelSetsv4Visualization-Test_LIBRARIES ${ITKLevelSetsv4Visualization_LIBRARIES} )
+list(APPEND ITKLevelSetsv4Visualization-Test_LIBRARIES ${ITKLevelSetsv4Visualization_LIBRARIES} )
 CreateTestDriver(ITKLevelSetsv4Visualization  "${ITKLevelSetsv4Visualization-Test_LIBRARIES}" "${ITKLevelSetsv4VisualizationTests}")
+target_link_libraries(ITKLevelSetsv4VisualizationTestDriver
+  PRIVATE
+    VTK::InteractionStyle
+    VTK::RenderingOpenGL2)
+vtk_module_autoinit(
+  TARGETS ITKLevelSetsv4VisualizationTestDriver
+  MODULES VTK::RenderingOpenGL2)
 
 set(TEMP ${ITK_TEST_OUTPUT_DIR})
 

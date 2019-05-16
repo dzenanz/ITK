@@ -132,4 +132,10 @@ project(ITKLevelSetsv4Visualization)
 # endif()
 # ")
 
+list(APPEND ITKLevelSetsv4Visualization_LIBRARIES
+  VTK::ImagingCore
+  VTK::IOImage
+  VTK::RenderingAnnotation
+  VTK::RenderingCore)
+
 itk_module_impl()
