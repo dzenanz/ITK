@@ -7,7 +7,7 @@ itk_module( ITKLevelSetsv4Visualization
     ITKVtkGlue
   TEST_DEPENDS
     ITKTestKernel
-    EXCLUDE_FROM_DEFAULT
+  EXCLUDE_FROM_DEFAULT
   DESCRIPTION
    "${DOCUMENTATION}"
   )

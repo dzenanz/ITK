@@ -66,6 +66,7 @@ if(NOT VTK_RENDERING_BACKEND STREQUAL "None")
     ${_target_freetypeopengl}
     ${_target_prefix}InteractionStyle
     ${_target_prefix}InteractionWidgets
+    ${_target_prefix}RenderingAnnotation
   )
 endif()
 if (${VTK_VERSION} VERSION_LESS ${VERSION_MIN})
