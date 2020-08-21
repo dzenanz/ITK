@@ -11,6 +11,11 @@ pngerror.c  pngpread.c  pngrutil.c  pngwutil.c
 pngread.c   pngset.c   pngwio.c
 )
 
+if (${CMAKE_SYSTEM_PROCESSOR} EQUAL powerpc)
+  list(PNG_SRCS APPEND powerpc_init.c filter_vsx_intrinsics.c)
+endif()
+# TODO: handle ARM, Intel and MIPS optimizations
+
 if(WIN32)
   if(BUILD_SHARED_LIBS)
     add_definitions(-DPNG_BUILD_DLL)

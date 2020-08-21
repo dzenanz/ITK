@@ -15,6 +15,10 @@ snapshot_paths='
   png*.h
   LICENSE
   scripts/pnglibconf.h.prebuilt
+  arm
+  intel
+  mips
+  powerpc
   '
 
 source "${BASH_SOURCE%/*}/../../../Utilities/Maintenance/UpdateThirdPartyFromUpstream.sh"
