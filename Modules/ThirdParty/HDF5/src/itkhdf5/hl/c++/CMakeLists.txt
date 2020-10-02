@@ -17,6 +17,6 @@ endif ()
 # Add in the unit tests for the packet table c++ wrapper
 # --------------------------------------------------------------------
 
-if (BUILD_TESTING)
-  add_subdirectory (test)
-endif ()
+#ITK REMOVED if (BUILD_TESTING)
+#ITK REMOVED   add_subdirectory (test)
+#ITK REMOVED endif ()
