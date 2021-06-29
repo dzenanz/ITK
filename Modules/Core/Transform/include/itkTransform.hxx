@@ -472,11 +472,11 @@ Transform<TParametersValueType, NInputDimensions, NOutputDimensions>::TransformS
 }
 
 template <typename TParametersValueType, unsigned int NInputDimensions, unsigned int NOutputDimensions>
-template <typename TImage>
-std::enable_if_t<TImage::ImageDimension == NInputDimensions && TImage::ImageDimension == NOutputDimensions, void>
-Transform<TParametersValueType, NInputDimensions, NOutputDimensions>::ApplyToImageMetadata(TImage * image) const
+void
+Transform<TParametersValueType, NInputDimensions, NOutputDimensions>::ApplyToImageMetadataInternal(
+  ImageBase<NInputDimensions> * image) const
 {
-  using ImageType = TImage;
+  using ImageType = ImageBase<NInputDimensions>;
 
   if (!this->IsLinear())
   {

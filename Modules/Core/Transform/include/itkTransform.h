@@ -27,6 +27,7 @@
 #include "vnl/vnl_vector_fixed.h"
 #include "vnl/vnl_matrix_fixed.h"
 #include "itkMatrix.h"
+#include "itkImageBase.h"
 
 namespace itk
 {
@@ -547,19 +548,33 @@ public:
    *
    * Updates image metadata (origin, spacing, direction cosines matrix) in place.
    *
-   * Only available when input and output space are of the same dimension.
+   * In C++, only available when input and output space are of the same dimension.
    * Only works properly for linear transforms.
    *
    * The image parameter may be either a SmartPointer or a raw pointer.
    * */
   template <typename TImage>
   std::enable_if_t<TImage::ImageDimension == NInputDimensions && TImage::ImageDimension == NOutputDimensions, void>
-  ApplyToImageMetadata(TImage * image) const;
+  ApplyToImageMetadata(TImage * image) const
+  {
+    this->ApplyToImageMetadataInternal(image);
+  }
   template <typename TImage>
   std::enable_if_t<TImage::ImageDimension == NInputDimensions && TImage::ImageDimension == NOutputDimensions, void>
   ApplyToImageMetadata(SmartPointer<TImage> image) const
   {
-    this->ApplyToImageMetadata(image.GetPointer()); // Delegate to the raw pointer signature
+    this->ApplyToImageMetadataInternal(image.GetPointer());
+  }
+  void
+  ApplyToImageMetadata(ImageBase<NInputDimensions> * image) const
+  {
+    if (NInputDimensions != NOutputDimensions)
+    {
+      itkExceptionMacro("ApplyToImageMetadata is only usable with transforms with equal input and output dimensions."
+                        " This class is: "
+                        << this->GetNameOfClass());
+    }
+    this->ApplyToImageMetadataInternal(image);
   }
 
 protected:
@@ -593,6 +608,10 @@ protected:
   mutable DirectionChangeMatrix m_DirectionChange;
 
 private:
+  /** Implementation of ApplyToImageMetadata. */
+  void
+  ApplyToImageMetadataInternal(ImageBase<NInputDimensions> * image) const;
+
   template <typename TType>
   static std::string
   GetTransformTypeAsString(TType *)
