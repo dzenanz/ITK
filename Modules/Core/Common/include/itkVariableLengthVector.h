@@ -1130,8 +1130,8 @@ namespace op
 template <typename TExpr1, typename TExpr2>
 struct CanBeAddedOrSubtracted
   : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, mpl::IsArray<TExpr2>>,
-            mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>,
-            mpl::And<std::is_arithmetic<TExpr1>::value, mpl::IsArray<TExpr2>>>
+            mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>>,
+            mpl::And<std::is_arithmetic<TExpr1>, mpl::IsArray<TExpr2>>>
 {};
 
 /** Tells whether objects from two types can be multiplied.
@@ -1147,8 +1147,8 @@ struct CanBeAddedOrSubtracted
  */
 template <typename TExpr1, typename TExpr2>
 struct CanBeMultiplied
-  : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>,
-            mpl::And<std::is_arithmetic<TExpr1>::value, mpl::IsArray<TExpr2>>>
+  : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>>,
+            mpl::And<std::is_arithmetic<TExpr1>, mpl::IsArray<TExpr2>>>
 {};
 
 /** Tells whether objects from two types can be multiplied.
@@ -1163,7 +1163,7 @@ struct CanBeMultiplied
  * \ingroup ITKCommon
  */
 template <typename TExpr1, typename TExpr2>
-struct CanBeDivided : mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>
+struct CanBeDivided : mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>>
 {};
 
 } // namespace op
@@ -1259,7 +1259,7 @@ private:
  * \sa \c mpl::IsArray<> to know the exact array types recognized as \em array by this traits
  */
 template <typename TExpr1, typename TExpr2>
-inline std::enable_if_t<Details::op::CanBeAddedOrSubtracted<TExpr1, TExpr2>::Value,
+inline std::enable_if_t<Details::op::CanBeAddedOrSubtracted<TExpr1, TExpr2>,
                         VariableLengthVectorExpression<TExpr1, TExpr2, Details::op::Plus>>
 operator+(TExpr1 const & lhs, TExpr2 const & rhs)
 {
@@ -1276,7 +1276,7 @@ operator+(TExpr1 const & lhs, TExpr2 const & rhs)
  * \sa \c mpl::IsArray<> to know the exact array types recognized as \em array by this traits
  */
 template <typename TExpr1, typename TExpr2>
-inline std::enable_if_t<Details::op::CanBeAddedOrSubtracted<TExpr1, TExpr2>::Value,
+inline std::enable_if_t<Details::op::CanBeAddedOrSubtracted<TExpr1, TExpr2>,
                         VariableLengthVectorExpression<TExpr1, TExpr2, Details::op::Sub>>
 operator-(TExpr1 const & lhs, TExpr2 const & rhs)
 {

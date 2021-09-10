@@ -18,6 +18,8 @@
 #ifndef itkMetaProgrammingLibrary_h
 #define itkMetaProgrammingLibrary_h
 
+#include <type_traits>
+
 #include "itkMacro.h"
 #include "itkSmartPointer.h"
 
@@ -38,7 +40,7 @@ namespace mpl
  * \ingroup MetaProgrammingLibrary
  * \ingroup ITKCommon
  */
-struct TrueType
+struct TrueType : std::true_type
 {
   using ValueType = bool;
   using Type = TrueType;
@@ -51,7 +53,7 @@ struct TrueType
  * \ingroup MetaProgrammingLibrary
  * \ingroup ITKCommon
  */
-struct FalseType
+struct FalseType : std::false_type
 {
   using ValueType = bool;
   using Type = FalseType;
