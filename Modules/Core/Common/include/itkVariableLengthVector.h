@@ -23,7 +23,6 @@
 #include <type_traits>
 #include "itkNumericTraits.h"
 #include "itkMetaProgrammingLibrary.h"
-#include "itkIsNumber.h"
 #include "itkPromoteType.h"
 #include "itkBinaryOperationConcept.h"
 
@@ -1131,8 +1130,8 @@ namespace op
 template <typename TExpr1, typename TExpr2>
 struct CanBeAddedOrSubtracted
   : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, mpl::IsArray<TExpr2>>,
-            mpl::And<mpl::IsArray<TExpr1>, mpl::IsNumber<TExpr2>>,
-            mpl::And<mpl::IsNumber<TExpr1>, mpl::IsArray<TExpr2>>>
+            mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>,
+            mpl::And<std::is_arithmetic<TExpr1>::value, mpl::IsArray<TExpr2>>>
 {};
 
 /** Tells whether objects from two types can be multiplied.
@@ -1148,8 +1147,8 @@ struct CanBeAddedOrSubtracted
  */
 template <typename TExpr1, typename TExpr2>
 struct CanBeMultiplied
-  : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, mpl::IsNumber<TExpr2>>,
-            mpl::And<mpl::IsNumber<TExpr1>, mpl::IsArray<TExpr2>>>
+  : mpl::Or<mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>,
+            mpl::And<std::is_arithmetic<TExpr1>::value, mpl::IsArray<TExpr2>>>
 {};
 
 /** Tells whether objects from two types can be multiplied.
@@ -1164,7 +1163,7 @@ struct CanBeMultiplied
  * \ingroup ITKCommon
  */
 template <typename TExpr1, typename TExpr2>
-struct CanBeDivided : mpl::And<mpl::IsArray<TExpr1>, mpl::IsNumber<TExpr2>>
+struct CanBeDivided : mpl::And<mpl::IsArray<TExpr1>, std::is_arithmetic<TExpr2>::value>
 {};
 
 } // namespace op
