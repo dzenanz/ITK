@@ -25,8 +25,8 @@ fi
 # EDIT THIS SCRIPT to change the hash tag at which to begin the
 # next update...
 #
-# This merge done May 31, 2017
-git branch DoubleConversion-upstream 0d3733a4168dd739f45cef8a55718f8b02ee3073
+# This merge done on 2022-02-11
+git branch DoubleConversion-upstream v3.2.0
 
 #
 # Make a temp directory to handle the import of the upstream source
