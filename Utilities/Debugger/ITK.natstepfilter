@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StepFilter xmlns="https://schemas.microsoft.com/vstudio/debugger/natstepfilter/2010">
+  <Function><Name>itk::SmartPointer.+</Name><Action>NoStepInto</Action></Function>
+  <Function><Name>itk::Object::Register</Name><Action>NoStepInto</Action></Function>
+</StepFilter>

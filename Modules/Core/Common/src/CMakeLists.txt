@@ -181,6 +181,9 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
   endif()
 elseif(MSVC)
   set_source_files_properties(itkCompensatedSummation.cxx PROPERTIES COMPILE_FLAGS -fp:precise)
+  get_filename_component(ITK_Debugger_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../Utilities/Debugger" ABSOLUTE)
+  list(APPEND ITKCommon_SRCS ${ITK_Debugger_DIR}/ITK.natvis)  # nicer debug visualizers for Visual Studio
+  list(APPEND ITKCommon_SRCS ${ITK_Debugger_DIR}/ITK.natstepfilter)  # do not step into SmartPointer and Object::Register
 endif()
 
 
