@@ -1,6 +1,6 @@
 #define NIFTI1_IO_C
 
-#include <stdint.h>
+#include <stdint.h>  // latest addition
 #include <assert.h>
 #include "nifti1_io.h"   /* typedefs, prototypes, macros, etc. */
 #include "nifti1_io_version.h"
