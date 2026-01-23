@@ -203,11 +203,6 @@ GradientRecursiveGaussianImageFilter<TInputImage, TOutputImage>::GenerateData()
 
   m_DerivativeFilter->SetInput(inputImage);
 
-  // For variable length output pixel types
-  const ImageRegionIteratorWithIndex<OutputImageType> initGradIt(outputImage,
-                                                                 this->m_ImageAdaptor->GetRequestedRegion());
-
-
   for (unsigned int nc = 0; nc < nComponents; ++nc)
   {
     for (unsigned int dim = 0; dim < ImageDimension; ++dim)
