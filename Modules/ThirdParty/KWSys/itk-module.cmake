@@ -1,10 +1,16 @@
-set(
-  DOCUMENTATION
-  "This module contains the third party Kitware KWSys library.
+set(DOCUMENTATION "This module contains the third party Kitware KWSys library.
 KWSys provides a platform-independent API to many common system
 features that are implemented differently on every platform.  The
 library is intended to be shared among many projects.  For more information, see
-Modules/ThirdParty/KWSys/src/README.kwsys."
-)
+Modules/ThirdParty/KWSys/src/README.kwsys.")
 
-itk_module(ITKKWSys DESCRIPTION "${DOCUMENTATION}")
+itk_module(ITKKWSys
+  DESCRIPTION
+    "${DOCUMENTATION}"
+  SPDX_LICENSE_IDENTIFIER
+    "BSD-3-Clause"
+  SPDX_COPYRIGHT_TEXT
+    "Copyright 2000-2024 Kitware, Inc. and Contributors"
+  SPDX_DOWNLOAD_LOCATION
+    "https://gitlab.kitware.com/utils/kwsys"
+)
