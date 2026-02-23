@@ -749,6 +749,13 @@ add_subdirectory(Modules/Remote)
 # Enable modules according to user inputs and the module dependency DAG.
 include(ITKModuleEnablement)
 
+#----------------------------------------------------------------------
+# Generate SPDX Software Bill of Materials (SBOM) for this build.
+option(ITK_GENERATE_SBOM "Generate an SPDX SBOM describing ITK modules and dependencies." OFF)
+mark_as_advanced(ITK_GENERATE_SBOM)
+include(ITKSBOM)
+itk_generate_sbom()
+
 # Setup clang-tidy for code best-practices enforcement for C++11
 include(ITKClangTidySetup)
 #----------------------------------------------------------------------

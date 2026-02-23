@@ -69,12 +69,15 @@ macro(itk_module _name)
   set(ITK_MODULE_${itk-module}_DESCRIPTION "description")
   set(ITK_MODULE_${itk-module}_EXCLUDE_FROM_DEFAULT 0)
   set(ITK_MODULE_${itk-module}_ENABLE_SHARED 0)
+  set(ITK_MODULE_${itk-module}_SPDX_LICENSE_IDENTIFIER "")
+  set(ITK_MODULE_${itk-module}_SPDX_COPYRIGHT_TEXT "")
+  set(ITK_MODULE_${itk-module}_SPDX_DOWNLOAD_LOCATION "")
   foreach(arg ${ARGN})
     ### Parse itk_module named options
     if(
       "${arg}"
         MATCHES
-        "^((|COMPILE_|PRIVATE_|TEST_|)DEPENDS|DESCRIPTION|DEFAULT|FACTORY_NAMES)$"
+        "^((|COMPILE_|PRIVATE_|TEST_|)DEPENDS|DESCRIPTION|DEFAULT|FACTORY_NAMES|SPDX_LICENSE_IDENTIFIER|SPDX_COPYRIGHT_TEXT|SPDX_DOWNLOAD_LOCATION)$"
     )
       set(_doing "${arg}")
     elseif("${arg}" MATCHES "^EXCLUDE_FROM_DEFAULT$")
@@ -104,6 +107,14 @@ macro(itk_module _name)
     elseif("${_doing}" MATCHES "^DESCRIPTION$")
       set(_doing "")
       set(ITK_MODULE_${itk-module}_DESCRIPTION "${arg}")
+    elseif("${_doing}" MATCHES "^SPDX_LICENSE_IDENTIFIER$")
+      set(_doing "")
+      set(ITK_MODULE_${itk-module}_SPDX_LICENSE_IDENTIFIER "${arg}")
+    elseif("${_doing}" MATCHES "^SPDX_COPYRIGHT_TEXT$")
+      set(ITK_MODULE_${itk-module}_SPDX_COPYRIGHT_TEXT "${arg}")
+    elseif("${_doing}" MATCHES "^SPDX_DOWNLOAD_LOCATION$")
+      set(_doing "")
+      set(ITK_MODULE_${itk-module}_SPDX_DOWNLOAD_LOCATION "${arg}")
     elseif("${_doing}" MATCHES "^DEFAULT")
       message(FATAL_ERROR "Invalid argument [DEFAULT]")
     else()
