@@ -47,7 +47,8 @@ using UnsignedCharRGBImageType = itk::Image<itk::RGBPixel<unsigned char>, 2>;
 using FloatRGBImageType = itk::Image<itk::RGBPixel<float>, 2>;
 
 using UnsignedCharImageType = itk::Image<unsigned char, 2>;
-using CharImageType = itk::Image<int8_t, 2>;
+using CharImageType = itk::Image<char, 2>;
+using SignedCharImageType = itk::Image<signed char, 2>;
 using UnsignedShortImageType = itk::Image<unsigned short, 2>;
 using ShortImageType = itk::Image<short, 2>;
 using UnsignedIntImageType = itk::Image<unsigned int, 2>;
@@ -59,6 +60,8 @@ using DoubleImageType = itk::Image<double, 2>;
 
 template void ITKVtkGlue_EXPORT
 QuickView::AddImage<CharImageType>(CharImageType * image, bool FlipVertical, std::string Description);
+template void ITKVtkGlue_EXPORT
+QuickView::AddImage<SignedCharImageType>(SignedCharImageType * image, bool FlipVertical, std::string Description);
 template void ITKVtkGlue_EXPORT
 QuickView::AddImage<UnsignedShortImageType>(UnsignedShortImageType * image, bool FlipVertical, std::string Description);
 template void ITKVtkGlue_EXPORT
