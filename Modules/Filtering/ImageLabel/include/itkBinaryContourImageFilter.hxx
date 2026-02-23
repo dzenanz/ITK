@@ -158,7 +158,7 @@ BinaryContourImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData
           ++outLineIt;
         }
         // create the run length object to go in the vector
-        fgLine.push_back(RunLength(length, thisIndex));
+        fgLine.emplace_back(length, thisIndex);
       }
       else
       {
@@ -174,7 +174,7 @@ BinaryContourImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData
           ++outLineIt;
         }
         // create the run length object to go in the vector
-        bgLine.push_back(RunLength(length, thisIndex));
+        bgLine.emplace_back(length, thisIndex);
       }
     }
 

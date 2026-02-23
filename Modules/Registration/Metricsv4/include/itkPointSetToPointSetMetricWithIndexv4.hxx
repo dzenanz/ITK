@@ -626,10 +626,10 @@ const typename PointSetToPointSetMetricWithIndexv4<TFixedPointSet, TMovingPointS
   for (PointIdentifier p = 1; p < nWorkUnits; ++p)
   {
     const PointIdentifier endRange = (p * nPoints) / static_cast<double>(nWorkUnits);
-    ranges.push_back(PointIdentifierPair(startRange, endRange));
+    ranges.emplace_back(startRange, endRange);
     startRange = endRange;
   }
-  ranges.push_back(PointIdentifierPair(startRange, nPoints));
+  ranges.emplace_back(startRange, nPoints);
 
   return ranges;
 }

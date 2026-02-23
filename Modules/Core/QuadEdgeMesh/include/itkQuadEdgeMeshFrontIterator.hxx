@@ -47,7 +47,7 @@ QuadEdgeMeshFrontBaseIterator<TMesh, TQE>::QuadEdgeMeshFrontBaseIterator(MeshTyp
     }
   }
   m_Front = new FrontType;
-  m_Front->push_back(FrontAtom(seed, 0));
+  m_Front->emplace_back(seed, 0);
   m_IsPointVisited = IsVisitedContainerType::New();
   m_IsPointVisited->SetElement(seed->GetOrigin(), true);
   m_IsPointVisited->SetElement(seed->GetDestination(), true);
@@ -107,7 +107,7 @@ QuadEdgeMeshFrontBaseIterator<TMesh, TQE>::operator++()
     const CoordinateType oCost = this->GetCost(oEdge) + fit->m_Cost;
 
     // Push the Sym() on the front:
-    m_Front->push_back(FrontAtom(oEdge->GetSym(), oCost));
+    m_Front->emplace_back(oEdge->GetSym(), oCost);
 
     // We still want to handle oEdge
     m_CurrentEdge = oEdge;

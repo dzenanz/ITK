@@ -104,10 +104,10 @@ MultiLabelSTAPLEImageFilter<TInputImage, TOutputImage, TWeights>::AllocateConfus
     // the confusion matrix has as many rows as there are input labels, and
     // one more column to accommodate "reject" classifications by the combined
     // classifier.
-    this->m_ConfusionMatrixArray.push_back(ConfusionMatrixType(static_cast<unsigned int>(this->m_TotalLabelCount) + 1,
-                                                               static_cast<unsigned int>(this->m_TotalLabelCount)));
-    this->m_UpdatedConfusionMatrixArray.push_back(ConfusionMatrixType(
-      static_cast<unsigned int>(this->m_TotalLabelCount) + 1, static_cast<unsigned int>(this->m_TotalLabelCount)));
+    this->m_ConfusionMatrixArray.emplace_back(static_cast<unsigned int>(this->m_TotalLabelCount) + 1,
+                                              static_cast<unsigned int>(this->m_TotalLabelCount));
+    this->m_UpdatedConfusionMatrixArray.emplace_back(static_cast<unsigned int>(this->m_TotalLabelCount) + 1,
+                                                     static_cast<unsigned int>(this->m_TotalLabelCount));
   }
 }
 
