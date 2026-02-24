@@ -135,7 +135,7 @@ LabelObject<TLabel, VImageDimension>::RemoveIndex(const IndexType & idx)
         IndexType newIdx = idx;
         ++newIdx[0];
         const LengthType newLength = orgLineLength - it->GetLength() - 1;
-        m_LineContainer.push_back(LineType(newIdx, newLength));
+        m_LineContainer.emplace_back(newIdx, newLength);
         return true;
       }
     }

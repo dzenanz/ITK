@@ -192,7 +192,7 @@ LevelSetEvolutionComputeIterationThreader<
 
     const auto temp_update = static_cast<LevelSetOutputType>(termContainer->Evaluate(inputIndex, characteristics));
 
-    this->m_NodePairsPerThread[threadId].push_back(NodePairType(levelsetIndex, temp_update));
+    this->m_NodePairsPerThread[threadId].emplace_back(levelsetIndex, temp_update);
 
     ++listIt;
   }

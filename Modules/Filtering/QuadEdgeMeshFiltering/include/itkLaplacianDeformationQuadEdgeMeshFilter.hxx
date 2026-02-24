@@ -255,12 +255,12 @@ LaplacianDeformationQuadEdgeMeshFilter<TInputMesh, TOutputMesh, TSolverTraits>::
           w *= t.m_Weight;
           ww -= w;
 
-          todo.push_back(Triple(temp->GetDestination(), w, degree - 1));
+          todo.emplace_back(temp->GetDestination(), w, degree - 1);
 
           temp = temp->GetOnext();
         } while (temp != qe);
 
-        todo.push_back(Triple(vId, ww, degree - 1));
+        todo.emplace_back(vId, ww, degree - 1);
       }
     }
   }
