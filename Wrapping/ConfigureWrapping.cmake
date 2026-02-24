@@ -43,11 +43,10 @@
 # Find ITK
 #-----------------------------------------------------------------------------
 find_package(ITK REQUIRED)
-set(ITK_NO_IMAGEIO_FACTORY_REGISTER_MANAGER ON)
-set(ITK_NO_MESHIO_FACTORY_REGISTER_MANAGER ON)
-set(ITK_NO_TRANSFORMIO_FACTORY_REGISTER_MANAGER ON)
-set(ITK_NO_FFTIMAGEFILTERINIT_FACTORY_REGISTER_MANAGER ON)
-include(${ITK_USE_FILE})
+
+# Note: We do not call itk_generate_factory_registration here. It is done at
+# run-time to support installed modules including remotes that may contribute
+# to the factory registration.
 
 ###############################################################################
 # Set various variables in order
