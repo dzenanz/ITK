@@ -35,7 +35,7 @@ namespace itk
  *                     ISIS Center, Georgetown University.
  *
  *
- *  \ingroup OSSystemObjects LoggingObjects
+ * \ingroup OSSystemObjects
  * \ingroup ITKCommon
  */
 

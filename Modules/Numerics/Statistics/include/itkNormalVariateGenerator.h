@@ -88,7 +88,6 @@ namespace itk::Statistics
  *         x = FastGauss;  (Sets x to a random Normal value)
  *
  *
- * \ingroup Statistics
  * \ingroup ITKStatistics
  */
 class ITKStatistics_EXPORT NormalVariateGenerator : public RandomVariateGeneratorBase

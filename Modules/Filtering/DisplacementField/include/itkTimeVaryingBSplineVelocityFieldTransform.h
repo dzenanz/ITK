@@ -61,7 +61,7 @@ namespace itk
  * \author Nick Tustison
  * \author Brian Avants
  *
- * \ingroup Transforms
+ * \ingroup ITKTransform
  * \ingroup ITKDisplacementField
  */
 template <typename TParametersValueType, unsigned int VDimension>

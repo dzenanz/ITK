@@ -44,7 +44,6 @@ namespace itk
  * Internally a compensated summation algorithm is used for the
  * accumulation of intensities to improve accuracy for large images.
  *
- * \ingroup MathematicalStatisticsImageFilters
  * \ingroup ITKImageStatistics
  *
  * \sphinx

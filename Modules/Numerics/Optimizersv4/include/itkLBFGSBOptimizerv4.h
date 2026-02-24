@@ -50,7 +50,7 @@ class ITK_FORWARD_EXPORT LBFGSBOptimizerHelperv4;
  *
  * For algorithmic details see \cite byrd1995 and \cite zhu1997.
  *
- * \ingroup Numerics Optimizersv4
+ * \ingroup Numerics
  * \ingroup ITKOptimizersv4
  */
 class ITKOptimizersv4_EXPORT LBFGSBOptimizerv4 : public LBFGSOptimizerBasev4<vnl_lbfgsb>

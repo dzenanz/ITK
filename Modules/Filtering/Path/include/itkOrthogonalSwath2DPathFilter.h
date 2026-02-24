@@ -47,7 +47,6 @@ namespace itk
  * The file itkOrthogonalSwath2DPathFilterTest.cxx provides a good usage example
  * of itk::OrthogonalSwath2DPathFilter
  *
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 template <typename TFourierSeriesPath, typename TSwathMeritImage>

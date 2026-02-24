@@ -34,7 +34,6 @@ namespace itk
  * of data.
  *
  * \ingroup DataSources
- * \ingroup Paths
  * \ingroup ITKPath
  */
 

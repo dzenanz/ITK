@@ -66,9 +66,9 @@ namespace itk
  * \sa BSplineInterpolateImageFunction
  * \sa ResampleImageFilter
  *
- * \ingroup GeometricTransformationFilters
+ * \ingroup GeometricTransform
  * \ingroup MultiThreaded
- * \ingroup CanBeStreamed
+ * \ingroup Streamed
  *
  * \ingroup ITKImageGrid
  */

@@ -54,7 +54,7 @@ namespace itk
  * This implementation was taken from the Insight Journal paper:
  * https://doi.org/10.54294/efycla
  *
- * \ingroup Multithreaded
+ * \ingroup MultiThreaded
  * \ingroup ITKThresholding
  */
 

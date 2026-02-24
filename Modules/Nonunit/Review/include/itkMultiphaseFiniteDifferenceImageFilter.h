@@ -133,7 +133,7 @@ namespace itk
  *  that is based on the papers \cite Mosaliganti_2009_a and
  *  \cite  Mosaliganti_2009_b.
  *
- * \ingroup ImageFilter
+ * \ingroup ImageFilters
  * \ingroup LevelSetSegmentation
  * \sa DenseFiniteDifferenceImageFilter2
  * \ingroup ITKReview

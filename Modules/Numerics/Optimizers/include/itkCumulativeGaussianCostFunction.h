@@ -44,7 +44,7 @@ namespace itk
  * as the function EvaluateCumulativeGaussian, where the argument
  * of the function is \f$ {\frac{{x - \mu }}{{\sigma \sqrt 2 }}} \f$.
  *
- * \ingroup Numerics Cost Functions
+ * \ingroup Optimizers
  * \ingroup ITKOptimizers
  */
 

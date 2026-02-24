@@ -53,7 +53,7 @@ namespace itk
  * proximity of the pixel being denoised at the specific point in time). It implements a specific
  * scheme for defining patch weights (mask) as described in \cite awate2005 and \cite awate2006.
  *
- * \ingroup Filtering
+ * \ingroup Filters
  * \ingroup ITKDenoising
  * \sa PatchBasedDenoisingBaseImageFilter
  */

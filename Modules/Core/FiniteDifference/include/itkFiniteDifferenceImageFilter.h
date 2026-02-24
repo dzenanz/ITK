@@ -123,7 +123,7 @@ namespace itk
  * ApplyUpdate adds the buffer values to the output image (solution). The
  * boolean Halt() (or ThreadedHalt()) method returns a true value to stop iteration.
  *
- * \ingroup ImageFilter
+ * \ingroup ImageFilters
  * \ingroup LevelSetSegmentation
  *
  * \sa DenseFiniteDifferenceImageFilter

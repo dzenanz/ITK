@@ -31,7 +31,7 @@ namespace itk
  * This class is parameterized over the types of the input image, polyline, vector
  * and output image.
  *
- * \ingroup ImageToImageFilter
+ * \ingroup ImageFilters
  * \ingroup ITKImageIntensity
  */
 template <typename TInputImage, typename TPolyline, typename TVector, typename TOutputImage>

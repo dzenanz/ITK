@@ -40,7 +40,7 @@ class PatchBasedDenoisingBaseImageFilterEnums
 {
 public:
   /** \class NoiseModel
-   * \ingroup Filtering
+   * \ingroup Filters
    * \ingroup ITKDenoising
    * Type definition for selecting the noise model. */
   enum class NoiseModel : uint8_t
@@ -52,7 +52,7 @@ public:
   };
 
   /** \class ComponentState
-   * \ingroup Filtering
+   * \ingroup Filters
    * \ingroup ITKDenoising
    * Type definition to determine which space to do calculations in.
    * TODO add comment about why no noise model can be used for RIEMANNIAN space
@@ -64,7 +64,7 @@ public:
   };
 
   /** \class FilterState
-   * \ingroup Filtering
+   * \ingroup Filters
    * \ingroup ITKDenoising
    * State that the filter is in, i.e. UNINITIALIZED or INITIALIZED. */
   enum class FilterState : uint8_t
@@ -121,7 +121,7 @@ operator<<(std::ostream & out, const PatchBasedDenoisingBaseImageFilterEnums::Fi
  * (2) the weighted fidelity updates (weighted by NoiseModelFidelityWeight) that prevent large
  * deviations of the denoised image from the noisy data.
  *
- * \ingroup Filtering
+ * \ingroup Filters
  * \ingroup ITKDenoising
  * \sa PatchBasedDenoisingImageFilter
  */

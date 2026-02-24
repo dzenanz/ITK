@@ -55,7 +55,7 @@ namespace itk
  * Z., Yoo T. S.
  * https://doi.org/10.54294/8hic7f
  *
- * \ingroup Segmentation ITKSuperPixel MultiThreading
+ * \ingroup ImageSegmentation ITKSuperPixel MultiThreaded
  */
 template <typename TInputImage, typename TOutputImage, typename TDistancePixel = float>
 class ITK_TEMPLATE_EXPORT SLICImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>

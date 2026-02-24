@@ -41,7 +41,7 @@ namespace itk
  * in the natural coordinate system used by ITK, not the one used in computer
  * graphics.
  *
- * \ingroup ImageToImageFilter
+ * \ingroup ImageFilters
  * \sa  PolylineMaskImageFilter
  * \ingroup ITKImageIntensity
  */

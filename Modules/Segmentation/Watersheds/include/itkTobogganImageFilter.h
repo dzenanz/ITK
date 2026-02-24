@@ -31,7 +31,7 @@ namespace itk
  * roughly equivalent to a watershed segmentation of the lowest level.
  *
  * The output is a 4 connected labeled map of the image.
- * \ingroup Segmentation
+ * \ingroup ImageSegmentation
  * \ingroup ITKWatersheds
  */
 

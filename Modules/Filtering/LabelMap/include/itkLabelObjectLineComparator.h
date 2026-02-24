@@ -32,7 +32,6 @@ namespace itk::Functor
  * https://doi.org/10.54294/q6auw4
  *
  * \sa LabelObjectLine
- * \ingroup LabeledImageObject
  * \ingroup ITKLabelMap
  */
 template <typename TLabelObjectLine>

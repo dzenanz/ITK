@@ -42,7 +42,6 @@ namespace itk::Statistics
  *
  * \author Glenn Pierce
  *
- * \ingroup Statistics
  * \ingroup ITKStatistics
  */
 

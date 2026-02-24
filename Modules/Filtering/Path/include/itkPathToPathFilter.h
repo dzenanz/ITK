@@ -30,7 +30,6 @@ namespace itk
  * path data and require path data as input. Specifically, this class
  * defines the SetInput() method for defining the input to a filter.
  *
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 

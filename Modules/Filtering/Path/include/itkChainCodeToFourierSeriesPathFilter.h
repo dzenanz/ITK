@@ -35,7 +35,6 @@ namespace itk
  * Because the requested number of harmonics may not be able to be computed,
  * it is advisable to check the number of harmonics in the actual output.
  *
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 template <typename TInputChainCodePath, typename TOutputFourierSeriesPath>

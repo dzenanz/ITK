@@ -62,7 +62,7 @@ namespace itk
  * \sa BSplineCenteredResampleImageFilterBase
  * \sa BSplineCenteredL2ResampleImageFilterBase
  *
- * \ingroup GeometricTransformationFilters
+ * \ingroup GeometricTransform
  * \ingroup SingleThreaded
  * \ingroup CannotBeStreamed
  * \ingroup ITKImageGrid

@@ -63,7 +63,6 @@ namespace itk
  * functions be populated. In addition, the number of classes should be equal
  * to the number of membership functions.
  *
- * \ingroup ImageClassificationFilters
  * \ingroup ITKClassifiers
  */
 

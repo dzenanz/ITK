@@ -32,7 +32,7 @@ namespace itk
  *
  * \sa QuadEdgeMeshEulerOperatorJoinVertexFunction
  *
- * \ingroup QuadEdgeMeshModifierFunctions
+ * \ingroup QEMeshModifierFunctions
  * \ingroup ITKQuadEdgeMesh
  */
 template <typename TMesh, typename TQEType>
