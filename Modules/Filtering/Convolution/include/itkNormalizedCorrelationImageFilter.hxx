@@ -158,12 +158,11 @@ NormalizedCorrelationImageFilter<TInputImage, TMaskImage, TOutputImage, TOperato
   auto realTemplateSize = static_cast<OutputPixelRealType>(templateSize);
   for (const auto & face : faceList)
   {
-    ConstNeighborhoodIterator<InputImageType> bit =
-      ConstNeighborhoodIterator<InputImageType>(normalizedTemplate.GetRadius(), input, face);
+    ConstNeighborhoodIterator<InputImageType> bit(normalizedTemplate.GetRadius(), input, face);
     bit.OverrideBoundaryCondition(this->GetBoundaryCondition());
     bit.GoToBegin();
 
-    ImageRegionIterator<OutputImageType> it = ImageRegionIterator<OutputImageType>(output, face);
+    ImageRegionIterator<OutputImageType> it(output, face);
 
     if (!mask)
     {
@@ -201,7 +200,7 @@ NormalizedCorrelationImageFilter<TInputImage, TMaskImage, TOutputImage, TOperato
     {
       // Mask is defined, use the same calculation as above but only
       // perform it under the mask
-      ImageRegionConstIterator<MaskImageType> mit = ImageRegionConstIterator<MaskImageType>(mask, face);
+      ImageRegionConstIterator<MaskImageType> mit(mask, face);
       while (!bit.IsAtEnd())
       {
         if (mit.Get())

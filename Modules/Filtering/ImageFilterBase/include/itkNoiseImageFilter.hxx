@@ -56,12 +56,11 @@ NoiseImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   // the edge of the buffer.
   for (const auto & face : faceList)
   {
-    ConstNeighborhoodIterator<InputImageType> bit =
-      ConstNeighborhoodIterator<InputImageType>(this->GetRadius(), input, face);
-    const unsigned int neighborhoodSize = bit.Size();
-    auto               num = static_cast<InputRealType>(bit.Size());
+    ConstNeighborhoodIterator<InputImageType> bit(this->GetRadius(), input, face);
+    const unsigned int                        neighborhoodSize = bit.Size();
+    auto                                      num = static_cast<InputRealType>(bit.Size());
 
-    ImageRegionIterator<OutputImageType> it = ImageRegionIterator<OutputImageType>(output, face);
+    ImageRegionIterator<OutputImageType> it(output, face);
     bit.OverrideBoundaryCondition(&nbc);
     bit.GoToBegin();
 

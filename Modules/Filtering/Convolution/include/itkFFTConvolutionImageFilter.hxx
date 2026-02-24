@@ -218,7 +218,7 @@ FFTConvolutionImageFilter<TInputImage, TKernelImage, TOutputImage, TInternalPrec
     regionOfInterestSize[dim] = outputRequestedSize[dim] + 2 * kernelRadius[dim];
     regionOfInterestIndex[dim] = outputRequestedIndex[dim] - kernelRadius[dim];
   }
-  const InputRegionType regionOfInterest = InputRegionType(regionOfInterestIndex, regionOfInterestSize);
+  const InputRegionType regionOfInterest(regionOfInterestIndex, regionOfInterestSize);
 
   const InputImageType * regionOfInterestImage = kernelPaddedInput;
   if (outputRequestedRegion != inputLargestRegion)
