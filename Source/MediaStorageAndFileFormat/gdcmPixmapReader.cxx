@@ -546,7 +546,44 @@ static bool DoOverlays(const DataSet& ds, Pixmap& pixeldata)
           {
           gdcmWarningMacro( "Bits Allocated are wrong. Correcting." );
           ov.SetBitsAllocated( pixeldata.GetPixelFormat().GetBitsAllocated() );
-          }
+        }
+        const DataElement &pixeldataDe = ds.GetDataElement(Tag(0x7fe0, 0x0010));
+        const ByteValue *bv = pixeldataDe.GetByteValue();
+        if (!bv) {
+          gdcmWarningMacro(
+              "Could not extract overlay from encapsulated stream.");
+          continue;
+        }
+        unsigned long computedFramePixelsNb =
+            pixeldata.GetDimension(0) * pixeldata.GetDimension(1);
+
+        if (pixeldata.GetPixelFormat().GetPixelSize() == 0 ||
+            computedFramePixelsNb >
+                bv->GetLength() / pixeldata.GetPixelFormat().GetPixelSize()) {
+          gdcmWarningMacro("Image information is not persistent. Can't extract overlay #"
+              << idxoverlays);
+          continue;
+        }
+        signed short ovOriginY = ov.GetOrigin()[0];
+        signed short ovOriginX = ov.GetOrigin()[1];
+        long startPixel =
+            (ovOriginX - 1) + (ovOriginY - 1) * pixeldata.GetDimension(0);
+        if (startPixel < 0 ||
+            (unsigned long)startPixel >= computedFramePixelsNb) {
+          gdcmWarningMacro(
+              "Origin is not in image buffer. Can't extract overlay #"
+              << idxoverlays);
+          continue;
+        }
+        unsigned long lastPixelAccessed =
+            (unsigned long)startPixel +
+            (ov.GetRows() - 1) * pixeldata.GetDimension(0) +
+            (ov.GetColumns() - 1);
+        if (lastPixelAccessed >= computedFramePixelsNb) {
+          gdcmWarningMacro("Overlay not fit image buffer. Can't extract overlay "
+                           << idxoverlays);
+          continue;
+        }
 
         if( !ov.GrabOverlayFromPixelData(ds) )
           {
@@ -631,13 +668,17 @@ bool PixmapReader::ReadImageInternal(MediaStorage const &ms, bool handlepixeldat
     {
     // PHILIPS_Gyroscan-12-MONO2-Jpeg_Lossless.dcm
     // PHILIPS_Gyroscan-12-Jpeg_Extended_Process_2_4.dcm
-    gdcmDebugMacro( "Mixture of ACR NEMA and DICOM file" );
-    isacrnema = true;
     const char *str = ds.GetDataElement( trecognitioncode ).GetByteValue()->GetPointer();
-    gdcm_assert( strncmp( str, "ACR-NEMA", strlen( "ACR-NEMA" ) ) == 0 ||
-      strncmp( str, "ACRNEMA", strlen( "ACRNEMA" ) ) == 0 ||
-      strncmp( str, "MIPS 2.0", strlen( "MIPS 2.0" ) ) == 0 );
-    (void)str;//warning removal
+    if( strncmp( str, "ACR-NEMA", strlen( "ACR-NEMA" ) ) == 0 ||
+        strncmp( str, "ACRNEMA", strlen( "ACRNEMA" ) ) == 0 ||
+        strncmp( str, "MIPS 2.0", strlen( "MIPS 2.0" ) ) == 0) {
+      gdcmDebugMacro("Mixture of ACR NEMA and DICOM file");
+      isacrnema = true;
+      } else {
+        Attribute<0x0008, 0x0010> at;
+        at.SetFromDataSet(ds);
+        gdcmWarningMacro("Junk recognition code: " + at.GetValue());
+      }
     }
 
   std::vector<unsigned int> vdims = ImageHelper::GetDimensionsValue(*F);
