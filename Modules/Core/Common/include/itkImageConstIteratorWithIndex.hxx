@@ -51,6 +51,7 @@ ImageConstIteratorWithIndex<TImage>::ImageConstIteratorWithIndex(const TImage * 
   : m_Image(ptr)
   , m_BeginIndex(region.GetIndex())
   , m_Region(region)
+  , m_Remaining(region.GetNumberOfPixels() > 0)
 {
   const InternalPixelType * buffer = m_Image->GetBufferPointer();
   m_PositionIndex = m_BeginIndex;
@@ -69,15 +70,10 @@ ImageConstIteratorWithIndex<TImage>::ImageConstIteratorWithIndex(const TImage * 
   m_Position = m_Begin;
 
   // Compute the end offset
-  m_Remaining = false;
   IndexType pastEnd;
   for (unsigned int i = 0; i < ImageDimension; ++i)
   {
     const SizeValueType size = region.GetSize()[i];
-    if (size > 0)
-    {
-      m_Remaining = true;
-    }
     m_EndIndex[i] = m_BeginIndex[i] + static_cast<OffsetValueType>(size);
     pastEnd[i] = m_BeginIndex[i] + static_cast<OffsetValueType>(size) - 1;
   }
@@ -86,8 +82,6 @@ ImageConstIteratorWithIndex<TImage>::ImageConstIteratorWithIndex(const TImage * 
   m_PixelAccessor = m_Image->GetPixelAccessor();
   m_PixelAccessorFunctor.SetPixelAccessor(m_PixelAccessor);
   m_PixelAccessorFunctor.SetBegin(buffer);
-
-  GoToBegin();
 }
 
 //----------------------------------------------------------------------

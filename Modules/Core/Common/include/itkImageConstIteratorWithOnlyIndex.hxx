@@ -28,6 +28,7 @@ template <typename TImage>
 ImageConstIteratorWithOnlyIndex<TImage>::ImageConstIteratorWithOnlyIndex(const TImage *, const RegionType & region)
   : m_BeginIndex(region.GetIndex())
   , m_Region(region)
+  , m_Remaining(region.GetNumberOfPixels() > 0)
 {
   m_PositionIndex = m_BeginIndex;
 
@@ -35,14 +36,8 @@ ImageConstIteratorWithOnlyIndex<TImage>::ImageConstIteratorWithOnlyIndex(const T
   for (unsigned int i = 0; i < ImageDimension; ++i)
   {
     const SizeValueType size = region.GetSize()[i];
-    if (size > 0)
-    {
-      m_Remaining = true;
-    }
     m_EndIndex[i] = m_BeginIndex[i] + static_cast<OffsetValueType>(size);
   }
-
-  GoToBegin();
 }
 
 //----------------------------------------------------------------------------
