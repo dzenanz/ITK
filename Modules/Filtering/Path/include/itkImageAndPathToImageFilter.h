@@ -33,7 +33,6 @@ namespace itk
  * images as outputs, according to the underlying DataObject implementation.)
  *
  * \ingroup ImageFilters
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 template <typename TInputImage, typename TInputPath, typename TOutputImage>

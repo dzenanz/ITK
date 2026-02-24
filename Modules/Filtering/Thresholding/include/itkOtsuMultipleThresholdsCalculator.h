@@ -42,7 +42,6 @@ namespace itk
  * To use this algorithm, simple call the setter: SetValleyEmphasis(true)
  * It is turned off by default.
  *
- * \ingroup Calculators
  * \ingroup ITKThresholding
  */
 

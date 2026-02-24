@@ -28,7 +28,7 @@ namespace itk
  * new edge joining h->Destination() to g->Destination(), thus splitting
  * the original Left().
  *
- * \ingroup QuadEdgeMeshModifierFunctions
+ * \ingroup QEMeshModifierFunctions
  * \ingroup ITKQuadEdgeMesh
  */
 template <typename TMesh, typename TQEType>

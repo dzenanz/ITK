@@ -38,7 +38,6 @@ namespace itk
  * and other static information) that can be gathered
  * at configuration time.
  *
- * \ingroup Common
  * \ingroup ITKCommon
  *
  */
@@ -63,7 +62,6 @@ private:
   /**
    * \class InformationValueType
    * An inner struct to organize dictionary values with descriptions
-   * \ingroup Common
    * \ingroup ITKCommon
    */
   class InformationValueType

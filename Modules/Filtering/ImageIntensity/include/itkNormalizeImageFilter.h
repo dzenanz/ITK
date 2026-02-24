@@ -43,7 +43,7 @@ namespace itk
  *
  * \sa NormalizeToConstantImageFilter
  *
- * \ingroup MathematicalImageFilters
+ * \ingroup IntensityImageFilters
  * \ingroup ITKImageIntensity
  *
  * \sphinx

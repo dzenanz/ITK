@@ -29,7 +29,7 @@ namespace itk
  * \brief This class saves a QuadMesh into a VTK-legacy file format,
  *        including its scalar data associated with points.
  *
- * \ingroup Writers
+ * \ingroup WriterObjects
  *
  * \ingroup ITKQuadEdgeMesh
  */

@@ -36,7 +36,6 @@ namespace itk
  * directly on the path.  The input and output images must be of the same type.
  *
  * \ingroup   ImageFilters
- * \ingroup   PathFilters
  * \ingroup ITKPath
  */
 template <typename TImage>

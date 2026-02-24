@@ -59,7 +59,6 @@ namespace itk
  * https://doi.org/10.54294/q6auw4
  *
  * \ingroup ImageObjects
- * \ingroup LabeledImageObject
  * \ingroup ITKLabelMap
  *
  * \sphinx

@@ -52,7 +52,6 @@ namespace itk
  * 1. Statistics are independently computed for each streamed and
  * threaded region then merged.
  *
- * \ingroup MathematicalStatisticsImageFilters
  * \ingroup ITKImageStatistics
  *
  * \sphinx

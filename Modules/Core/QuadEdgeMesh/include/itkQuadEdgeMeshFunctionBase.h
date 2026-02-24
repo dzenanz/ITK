@@ -47,7 +47,7 @@ namespace itk
  * This class is template over the mesh type (to be modified) and
  * the output (usually a created/deleted vertex or face) type.
  *
- * \ingroup Functions
+ * \ingroup QEMeshModifierFunctions
  *
  * \ingroup ITKQuadEdgeMesh
  */

@@ -32,7 +32,6 @@ namespace itk
  * If MaximallyConnectedOn() is called, then the resulting chain code will be
  * maximally connected (for example, 4-connected instead of 8-connected in 2D).
  *
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 template <typename TInputPath, typename TOutputChainCodePath>

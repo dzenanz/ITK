@@ -58,7 +58,7 @@ namespace itk
  * This filter expects both the input and output images to be of pixel type
  * Vector.
  *
- * \ingroup ImageToImageFilter
+ * \ingroup ImageFilters
  * \ingroup ITKDisplacementField
  */
 template <typename TInputImage, typename TOutputImage>

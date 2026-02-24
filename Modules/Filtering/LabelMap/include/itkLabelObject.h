@@ -58,7 +58,6 @@ namespace itk
  *
  * \sa LabelMapFilter, AttributeLabelObject
  * \ingroup DataRepresentation
- * \ingroup LabeledImageObject
  * \ingroup ITKLabelMap
  */
 template <typename TLabel, unsigned int VImageDimension>

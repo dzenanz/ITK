@@ -42,7 +42,6 @@ namespace itk
  *
  * This source object expects the image to be of pixel type Vector.
  *
- * \ingroup ImageSource
  * \ingroup ITKDisplacementField
  */
 template <typename TOutputImage>

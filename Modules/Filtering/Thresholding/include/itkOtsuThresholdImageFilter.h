@@ -43,7 +43,7 @@ namespace itk
  *
  * \sa HistogramThresholdImageFilter
  *
- * \ingroup Multithreaded
+ * \ingroup MultiThreaded
  * \ingroup ITKThresholding
  *
  * \sphinx

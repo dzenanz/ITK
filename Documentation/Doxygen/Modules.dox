@@ -115,6 +115,16 @@
 */
 
 /**
+  \defgroup QEMeshModifierFunctions QuadEdge Mesh Modifier Functions
+  \ingroup MeshFilters
+
+  QuadEdge mesh modifier functions implement small, targeted modifications to
+  QuadEdge meshes such as Euler operators (e.g., join/split vertex, flip edge).
+
+  \sa itk::QuadEdgeMesh
+*/
+
+/**
   \defgroup IntensityImageFilters Intensity Image Filters
   \ingroup ImageFilters
 
@@ -393,10 +403,6 @@
   \ingroup DataProcessing
 */
 
-  \defgroup ITKTransform Transforms
-  \ingroup DataProcessing
-*/
-
 /**
   \defgroup ImageAdaptors Image Adaptors
   \ingroup DataProcessing
@@ -517,6 +523,14 @@
   \ingroup SystemObjects
 
   Basic operating system related system objects in ITK.
+*/
+
+/**
+  \defgroup LoggingObjects Logging Objects
+  \ingroup OSSystemObjects
+
+  Objects implementing a logging framework for reporting messages,
+  warnings, and errors during ITK processing.
 */
 
 /**

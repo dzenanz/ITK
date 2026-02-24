@@ -110,7 +110,6 @@ namespace itk::Statistics
  * rjwagner at writeme dot com and Cokus at math dot washington dot edu
  * when you write.
  *
- * \ingroup Common
  * \ingroup ITKCommon
  *
  * \sphinx

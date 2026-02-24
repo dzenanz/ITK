@@ -44,7 +44,7 @@ namespace itk
  * \author Hee-Su Kim, Compute Science Dept. Kyungpook National University,
  *                     ISIS Center, Georgetown University.
  *
- * \ingroup OSSystemObjects
+ * \ingroup OSSystemObjects LoggingObjects
  * \ingroup ITKCommon
  */
 class ITKCommon_EXPORT LoggerOutput : public OutputWindow

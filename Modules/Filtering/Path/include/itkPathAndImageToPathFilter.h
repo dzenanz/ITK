@@ -32,7 +32,6 @@ namespace itk
  * precedent of having path inputs precede image inputs for functions producing
  * paths as outputs, according to the underlying DataObject implementation.)
  *
- * \ingroup PathFilters
  * \ingroup ITKPath
  */
 template <typename TInputPath, typename TInputImage, typename TOutputPath>

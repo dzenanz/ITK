@@ -36,7 +36,6 @@ namespace itk
  * This implementation was taken from the Insight Journal paper:
  * https://doi.org/10.54294/q6auw4
  *
- * \ingroup LabeledImageObject
  * \ingroup ITKLabelMap
  */
 template <unsigned int VImageDimension>

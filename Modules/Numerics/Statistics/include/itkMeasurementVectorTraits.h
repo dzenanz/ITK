@@ -31,7 +31,6 @@
 namespace itk::Statistics
 {
 /** \class MeasurementVectorTraits
- * \ingroup Statistics
  * \ingroup ITKStatistics
  */
 
@@ -401,7 +400,6 @@ public:
 };
 
 /** \class MeasurementVectorTraitsTypes
- * \ingroup Statistics
  * \ingroup ITKStatistics
  */
 

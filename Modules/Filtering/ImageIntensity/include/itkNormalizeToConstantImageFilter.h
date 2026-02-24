@@ -44,7 +44,7 @@ namespace itk
  * \sa StatisticsImageFilter
  * \sa DivideImageFilter
  *
- * \ingroup MathematicalImageFilters
+ * \ingroup IntensityImageFilters
  * \ingroup ITKImageIntensity
  *
  * \sphinx
