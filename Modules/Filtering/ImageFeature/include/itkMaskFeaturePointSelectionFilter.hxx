@@ -196,7 +196,7 @@ MaskFeaturePointSelectionFilter<TImage, TMask, TFeatures>::GenerateData()
       const double meanOfSquares = sumOfSquares.GetSum() / numPixelsInNeighborhood;
 
       const double variance = meanOfSquares - squaredMean;
-      using PairType = MultiMapType::value_type;
+      using PairType = typename MultiMapType::value_type;
 
       // we only insert blocks with variance > 0
       if (itk::NumericTraits<double>::IsPositive(variance))
