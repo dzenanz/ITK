@@ -238,8 +238,8 @@ LinearSystemWrapper::CuthillMckeeOrdering(ColumnArray & newNumbering, int starti
   /* temp storage for re-mapping
                                of rows */
 
-  newNumbering = ColumnArray(this->m_Order);               /* new row numbering */
-  ColumnArray reverseMapping = ColumnArray(this->m_Order); /* allocate temp storage */
+  newNumbering = ColumnArray(this->m_Order); /* new row numbering */
+  ColumnArray reverseMapping(this->m_Order); /* allocate temp storage */
 
   /* find degrees of each row in matrix & initialize newNumbering vector */
   ColumnArray currentRow;               /* column indices of nonzero in

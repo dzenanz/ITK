@@ -59,10 +59,9 @@ SimpleContourExtractorImageFilter<TInputImage, TOutputImage>::DynamicThreadedGen
   ZeroFluxNeumannBoundaryCondition<InputImageType> nbc;
   for (const auto & face : faceList)
   {
-    ConstNeighborhoodIterator<InputImageType> bit =
-      ConstNeighborhoodIterator<InputImageType>(this->GetRadius(), input, face);
-    const unsigned int                   neighborhoodSize = bit.Size();
-    ImageRegionIterator<OutputImageType> it = ImageRegionIterator<OutputImageType>(output, face);
+    ConstNeighborhoodIterator<InputImageType> bit(this->GetRadius(), input, face);
+    const unsigned int                        neighborhoodSize = bit.Size();
+    ImageRegionIterator<OutputImageType>      it(output, face);
 
     bit.OverrideBoundaryCondition(&nbc);
     bit.GoToBegin();

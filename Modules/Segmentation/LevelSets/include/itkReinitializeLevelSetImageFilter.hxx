@@ -152,7 +152,7 @@ ReinitializeLevelSetImageFilter<TLevelSet>::GenerateDataFull()
   m_Marcher->SetTrialPoints(m_Locator->GetOutsidePoints());
   m_Marcher->Update();
 
-  IteratorType tempIt = IteratorType(tempLevelSet, tempLevelSet->GetBufferedRegion());
+  IteratorType tempIt(tempLevelSet, tempLevelSet->GetBufferedRegion());
   while (!inputIt.IsAtEnd())
   {
     auto value = static_cast<double>(inputIt.Get());

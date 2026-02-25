@@ -259,9 +259,9 @@ BilateralImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   for (const auto & face : faceList)
   {
     // walk the boundary face and the corresponding section of the output
-    NeighborhoodIteratorType b_iter = NeighborhoodIteratorType(m_GaussianKernel.GetRadius(), this->GetInput(), face);
+    NeighborhoodIteratorType b_iter(m_GaussianKernel.GetRadius(), this->GetInput(), face);
     b_iter.OverrideBoundaryCondition(&BC);
-    ImageRegionIterator<OutputImageType> o_iter = ImageRegionIterator<OutputImageType>(this->GetOutput(), face);
+    ImageRegionIterator<OutputImageType> o_iter(this->GetOutput(), face);
 
     while (!b_iter.IsAtEnd())
     {
