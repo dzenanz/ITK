@@ -20,7 +20,6 @@
 
 #include "itkProgressReporter.h"
 #include "itkVnlFFTCommon.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageAlgorithm.h"
 
 

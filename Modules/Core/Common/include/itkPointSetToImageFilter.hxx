@@ -20,7 +20,6 @@
 
 
 #include "itkBoundingBox.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
 #include "itkMath.h"
 

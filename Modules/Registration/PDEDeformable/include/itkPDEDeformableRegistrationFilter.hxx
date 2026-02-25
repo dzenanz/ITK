@@ -20,7 +20,6 @@
 
 
 #include "itkImageRegionIterator.h"
-#include "itkImageLinearIteratorWithIndex.h"
 #include "itkDataObject.h"
 
 #include "itkGaussianOperator.h"

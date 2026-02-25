@@ -20,8 +20,6 @@
 
 
 #include "itkImageAlgorithm.h"
-#include "itkImageRegionExclusionIteratorWithIndex.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkObjectFactory.h"
 #include "itkProgressReporter.h"
 

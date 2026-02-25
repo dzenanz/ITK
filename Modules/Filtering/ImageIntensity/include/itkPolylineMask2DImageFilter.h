@@ -19,7 +19,6 @@
 #define itkPolylineMask2DImageFilter_h
 
 #include "itkImageToImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 
 namespace itk
 {

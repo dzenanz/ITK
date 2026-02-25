@@ -20,7 +20,6 @@
 
 #include "itkPoint.h"
 #include "itkPixelTraits.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkImageRegionIterator.h"
 #include "itkListSample.h"
 

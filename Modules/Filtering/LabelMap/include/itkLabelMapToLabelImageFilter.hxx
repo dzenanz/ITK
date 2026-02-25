@@ -20,7 +20,6 @@
 
 #include "itkNumericTraits.h"
 #include "itkProgressReporter.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {

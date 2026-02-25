@@ -18,7 +18,6 @@
 #ifndef itkMeanReciprocalSquareDifferencePointSetToImageMetric_hxx
 #define itkMeanReciprocalSquareDifferencePointSetToImageMetric_hxx
 
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkMath.h"
 
 namespace itk

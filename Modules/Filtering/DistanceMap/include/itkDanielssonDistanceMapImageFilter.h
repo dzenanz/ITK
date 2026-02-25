@@ -19,7 +19,6 @@
 #define itkDanielssonDistanceMapImageFilter_h
 
 #include "itkImageToImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 
 namespace itk
 {

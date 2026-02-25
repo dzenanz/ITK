@@ -21,7 +21,6 @@
 
 #include "itkContinuousIndex.h"
 #include "itkImageRegionIterator.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {

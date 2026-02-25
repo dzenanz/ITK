@@ -20,7 +20,6 @@
 #define itkFEMScatteredDataPointSetToImageFilter_hxx
 
 #include "itkImageRegionIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageDuplicator.h"
 #include "itkCastImageFilter.h"
 #include "itkNumericTraits.h"

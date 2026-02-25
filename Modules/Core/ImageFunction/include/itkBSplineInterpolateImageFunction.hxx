@@ -28,8 +28,6 @@
 #ifndef itkBSplineInterpolateImageFunction_hxx
 #define itkBSplineInterpolateImageFunction_hxx
 
-#include "itkImageLinearIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkImageRegionIterator.h"
 
 #include "itkVector.h"

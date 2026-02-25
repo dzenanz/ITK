@@ -22,7 +22,6 @@
 #include "itkImage.h"
 #include "itkDiscreteLevelSetImage.h"
 #include "itkWhitakerSparseLevelSetImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkShapedNeighborhoodIterator.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkLabelMapToLabelImageFilter.h"

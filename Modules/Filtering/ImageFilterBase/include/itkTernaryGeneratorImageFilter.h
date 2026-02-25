@@ -19,7 +19,6 @@
 #define itkTernaryGeneratorImageFilter_h
 
 #include "itkInPlaceImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSimpleDataObjectDecorator.h"
 
 #include <functional>

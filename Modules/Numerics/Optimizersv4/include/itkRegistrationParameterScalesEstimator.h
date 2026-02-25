@@ -25,8 +25,6 @@
 #include "itkRigid3DPerspectiveTransform.h"
 
 #include "itkOptimizerParameterScalesEstimator.h"
-#include "itkImageRandomConstIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "ITKOptimizersv4Export.h"
 
 namespace itk
