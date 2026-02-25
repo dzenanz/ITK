@@ -22,6 +22,7 @@
 
 #include "itkReflectiveImageRegionConstIterator.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include <algorithm> // For max.
 
 namespace itk

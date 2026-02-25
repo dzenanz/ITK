@@ -20,6 +20,8 @@
 
 
 #include "itkCompositeTransform.h"
+#include "itkImageRandomConstIteratorWithIndex.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkPointSet.h"
 #include "itkObjectToObjectMetric.h"
 #include "itkPrintHelper.h"

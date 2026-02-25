@@ -18,6 +18,7 @@
 #ifndef itkLandmarkDisplacementFieldSource_hxx
 #define itkLandmarkDisplacementFieldSource_hxx
 
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkProgressReporter.h"
 #include "itkThinPlateSplineKernelTransform.h"
 #include <algorithm> // For max.
