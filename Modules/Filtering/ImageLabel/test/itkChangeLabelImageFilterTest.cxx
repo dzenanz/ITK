@@ -18,6 +18,7 @@
 
 #include "itkRandomImageSource.h"
 #include "itkChangeLabelImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 
 
 int

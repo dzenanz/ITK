@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSimpleFilterWatcher.h"
 #include "itkRGBPixel.h"
 #include "itkRGBToLuminanceImageAdaptor.h"

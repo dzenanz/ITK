@@ -18,6 +18,7 @@
 
 #include "itkShowDistanceMap.h"
 #include "itkDanielssonDistanceMapImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkStdStreamStateSave.h"
 #include "itkGTest.h"
 

@@ -18,6 +18,7 @@
 
 #include "itkAcosImageFilter.h"
 #include "itkAcosImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSubtractImageFilter.h"
 #include "itkSimpleFilterWatcher.h"

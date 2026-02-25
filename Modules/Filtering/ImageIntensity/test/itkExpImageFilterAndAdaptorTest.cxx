@@ -18,6 +18,7 @@
 
 #include "itkExpImageFilter.h"
 #include "itkExpImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSubtractImageFilter.h"
 
 

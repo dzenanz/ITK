@@ -18,6 +18,7 @@
 
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSymmetricSecondRankTensor.h"
 #include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itkTestingMacros.h"

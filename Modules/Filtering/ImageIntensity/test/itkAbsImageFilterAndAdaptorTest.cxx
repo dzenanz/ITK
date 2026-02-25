@@ -19,6 +19,7 @@
 #include "itkAbsImageFilter.h"
 #include "itkAbsImageAdaptor.h"
 #include "itkImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSubtractImageFilter.h"
 #include "itkUnaryGeneratorImageFilter.h"

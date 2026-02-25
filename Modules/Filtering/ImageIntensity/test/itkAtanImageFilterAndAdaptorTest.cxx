@@ -18,6 +18,7 @@
 
 #include "itkAtanImageFilter.h"
 #include "itkAtanImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSubtractImageFilter.h"
 #include "itkTestingMacros.h"

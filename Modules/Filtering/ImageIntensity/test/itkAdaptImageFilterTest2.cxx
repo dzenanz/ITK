@@ -32,6 +32,7 @@
 
 
 #include "itkAdaptImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNthElementPixelAccessor.h"
 #include "itkMath.h"
 

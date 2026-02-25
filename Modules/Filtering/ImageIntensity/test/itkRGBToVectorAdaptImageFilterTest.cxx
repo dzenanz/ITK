@@ -30,6 +30,7 @@
 
 
 #include "itkAdaptImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkRGBToVectorPixelAccessor.h"
 #include "itkMath.h"
 

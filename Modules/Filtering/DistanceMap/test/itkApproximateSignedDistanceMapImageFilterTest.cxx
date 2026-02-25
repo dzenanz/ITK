@@ -19,6 +19,7 @@
 #include "itkApproximateSignedDistanceMapImageFilter.h"
 #include "itkShiftScaleImageFilter.h"
 #include "itkImageFileWriter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
 #include "itkTestingMacros.h"
 

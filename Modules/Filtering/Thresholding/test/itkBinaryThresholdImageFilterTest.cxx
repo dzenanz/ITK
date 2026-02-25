@@ -18,6 +18,7 @@
 
 #include "itkRandomImageSource.h"
 #include "itkBinaryThresholdImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
 #include "itkMath.h"
 #include "itkTestingMacros.h"

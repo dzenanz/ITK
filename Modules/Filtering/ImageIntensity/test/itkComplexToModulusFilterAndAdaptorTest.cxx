@@ -18,6 +18,7 @@
 
 #include "itkComplexToModulusImageFilter.h"
 #include "itkComplexToModulusImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSubtractImageFilter.h"
 #include "itkTestingMacros.h"

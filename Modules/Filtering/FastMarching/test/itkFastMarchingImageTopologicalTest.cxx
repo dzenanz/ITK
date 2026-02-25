@@ -21,6 +21,7 @@
 #include "itkBinaryThresholdImageFilter.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkLabelContourImageFilter.h"
 #include "itkTestingMacros.h"
 

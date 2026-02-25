@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkIsoContourDistanceImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkShiftScaleImageFilter.h"
 #include "itkMultiplyImageFilter.h"

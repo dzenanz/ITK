@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSimpleFilterWatcher.h"
 #include "itkTestingMacros.h"
 

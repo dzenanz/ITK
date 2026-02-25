@@ -21,6 +21,7 @@
 #include "itkDenseFiniteDifferenceImageFilter.h"
 
 #include "itkBinaryThresholdImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSimilarityIndexImageFilter.h"
 
 /**

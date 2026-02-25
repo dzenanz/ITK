@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkFastChamferDistanceImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include <gtest/gtest.h>
 

@@ -21,6 +21,7 @@
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkExpandImageFilter.h"
 #include "itkCastImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkStreamingImageFilter.h"
 #include "itkMath.h"
 #include "itkTestingMacros.h"
