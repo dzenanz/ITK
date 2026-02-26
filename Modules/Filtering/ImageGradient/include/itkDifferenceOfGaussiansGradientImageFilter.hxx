@@ -62,9 +62,8 @@ DifferenceOfGaussiansGradientImageFilter<TInputImage, TDataType>::GenerateData()
   ProgressReporter progress(this, 0, outputPtr->GetRequestedRegion().GetNumberOfPixels());
 
   // Create an iterator that will walk the output region
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
-  OutputIterator outIt(outputPtr, outputPtr->GetRequestedRegion());
+  ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, outputPtr->GetRequestedRegion());
 
   // Define a few indices that will be used to translate from an input pixel
   // to an output pixel

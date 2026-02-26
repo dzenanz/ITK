@@ -87,8 +87,7 @@ LabelImageToLabelMapFilter<TInputImage, TOutputImage>::ThreadedGenerateData(
 {
   TotalProgressReporter progress(this, this->GetInput()->GetRequestedRegion().GetNumberOfPixels());
 
-  using InputLineIteratorType = ImageLinearConstIteratorWithIndex<InputImageType>;
-  InputLineIteratorType it(this->GetInput(), regionForThread);
+  ImageLinearConstIteratorWithIndex<InputImageType> it(this->GetInput(), regionForThread);
   it.SetDirection(0);
 
   for (it.GoToBegin(); !it.IsAtEnd(); it.NextLine())

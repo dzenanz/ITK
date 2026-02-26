@@ -56,7 +56,6 @@ void
 PolylineMask2DImageFilter<TInputImage, TPolyline, TOutputImage>::GenerateData()
 {
   using LineIteratorType = LineIterator<TOutputImage>;
-  using ImageLineIteratorType = ImageLinearIteratorWithIndex<TOutputImage>;
 
   using InputImageConstIteratorType = ImageRegionConstIterator<TInputImage>;
 
@@ -122,7 +121,7 @@ PolylineMask2DImageFilter<TInputImage, TPolyline, TOutputImage>::GenerateData()
 
   ImageIndexType tmpImageIndex{};
 
-  ImageLineIteratorType imit(outputImagePtr, outputImagePtr->GetLargestPossibleRegion());
+  ImageLinearIteratorWithIndex<TOutputImage> imit(outputImagePtr, outputImagePtr->GetLargestPossibleRegion());
   imit.SetDirection(0);
 
   itkDebugMacro("Generating the mask defined by the polyline.....");

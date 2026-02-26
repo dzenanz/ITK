@@ -491,8 +491,7 @@ RegistrationParameterScalesEstimator<TMetric>::SampleVirtualDomainWithRegion(Vir
   this->m_SamplePoints.resize(total);
 
   /* Set up an iterator within the user specified virtual image region. */
-  using RegionIterator = ImageRegionConstIteratorWithIndex<VirtualImageType>;
-  RegionIterator regionIter(image, region);
+  ImageRegionConstIteratorWithIndex<VirtualImageType> regionIter(image, region);
 
 
   /* Iterate over the image */
@@ -565,8 +564,7 @@ RegistrationParameterScalesEstimator<TMetric>::SampleVirtualDomainRandomly()
   this->m_SamplePoints.resize(m_NumberOfRandomSamples);
 
   // Set up a random iterator within the user specified virtual image region.
-  using RandomIterator = ImageRandomConstIteratorWithIndex<VirtualImageType>;
-  RandomIterator randIter(image, this->m_Metric->GetVirtualRegion());
+  ImageRandomConstIteratorWithIndex<VirtualImageType> randIter(image, this->m_Metric->GetVirtualRegion());
 
   randIter.SetNumberOfSamples(this->m_NumberOfRandomSamples);
   randIter.GoToBegin();

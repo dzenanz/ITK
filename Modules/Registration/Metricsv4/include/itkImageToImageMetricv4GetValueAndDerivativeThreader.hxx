@@ -30,9 +30,8 @@ ImageToImageMetricv4GetValueAndDerivativeThreader<
   TImageToImageMetricv4>::ThreadedExecution(const DomainType & imageSubRegion, const ThreadIdType threadId)
 {
   const typename VirtualImageType::ConstPointer virtualImage = this->m_Associate->GetVirtualImage();
-  using IteratorType = ImageRegionConstIteratorWithIndex<VirtualImageType>;
-  VirtualPointType virtualPoint;
-  for (IteratorType it(virtualImage, imageSubRegion); !it.IsAtEnd(); ++it)
+  VirtualPointType                              virtualPoint;
+  for (ImageRegionConstIteratorWithIndex<VirtualImageType> it(virtualImage, imageSubRegion); !it.IsAtEnd(); ++it)
   {
     const VirtualIndexType & virtualIndex = it.GetIndex();
     virtualImage->TransformIndexToPhysicalPoint(virtualIndex, virtualPoint);

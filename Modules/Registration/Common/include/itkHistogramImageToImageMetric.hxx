@@ -246,14 +246,13 @@ HistogramImageToImageMetric<TFixedImage, TMovingImage>::ComputeHistogram(const T
     itkExceptionStringMacro("Fixed image has not been assigned");
   }
 
-  using FixedIteratorType = ImageRegionConstIteratorWithIndex<FixedImageType>;
 
   typename FixedImageType::IndexType  index;
   typename FixedImageType::RegionType fixedRegion;
   HistogramType::IndexType            hIndex;
 
   fixedRegion = this->GetFixedImageRegion();
-  FixedIteratorType ti(fixedImage, fixedRegion);
+  ImageRegionConstIteratorWithIndex<FixedImageType> ti(fixedImage, fixedRegion);
 
   this->m_NumberOfPixelsCounted = 0;
   this->SetTransformParameters(parameters);

@@ -178,8 +178,6 @@ LabelGeometryImageFilter<TLabelImage, TIntensityImage>::GenerateData()
   // Iterator over the label image.
   ImageRegionConstIteratorWithIndex<TLabelImage> labelIt(this->GetInput(), this->GetInput()->GetBufferedRegion());
 
-  using ImageIteratorWithIndexType = ImageRegionConstIteratorWithIndex<TLabelImage>;
-
 
   // begin with empty m_LabelGeometryMapper and m_AllLabels
   m_LabelGeometryMapper.clear();
@@ -212,7 +210,7 @@ LabelGeometryImageFilter<TLabelImage, TIntensityImage>::GenerateData()
     // BOUNDING BOX
     // The bounding box is defined in (min, max) pairs, such as
     // (xmin,xmax,ymin,ymax,zmin,zmax).
-    typename ImageIteratorWithIndexType::IndexType index = labelIt.GetIndex();
+    typename ImageRegionConstIteratorWithIndex<TLabelImage>::IndexType index = labelIt.GetIndex();
     for (unsigned int i = 0; i < (2 * ImageDimension); i += 2)
     {
       // Update min
@@ -262,9 +260,8 @@ LabelGeometryImageFilter<TLabelImage, TIntensityImage>::GenerateData()
     RealType value;
 
     // Iterator over the intensity image.
-    using IntensityImageIteratorType = ImageRegionConstIteratorWithIndex<TIntensityImage>;
 
-    IntensityImageIteratorType it(intensityImage, intensityImage->GetBufferedRegion());
+    ImageRegionConstIteratorWithIndex<TIntensityImage> it(intensityImage, intensityImage->GetBufferedRegion());
 
     typename IntensityImageIteratorType::IndexType index;
 

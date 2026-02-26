@@ -252,8 +252,7 @@ JointHistogramMutualInformationImageToImageMetricv4<TFixedImage,
   }
 
   // Compute moving image marginal PDF by summing over fixed image bins.
-  using JointPDFLinearIterator = ImageLinearIteratorWithIndex<JointPDFType>;
-  JointPDFLinearIterator linearIter(m_JointPDF, m_JointPDF->GetBufferedRegion());
+  ImageLinearIteratorWithIndex<JointPDFType> linearIter(m_JointPDF, m_JointPDF->GetBufferedRegion());
   linearIter.SetDirection(0);
   linearIter.GoToBegin();
   unsigned int                                        fixedIndex = 0;

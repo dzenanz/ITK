@@ -183,8 +183,7 @@ ScalarImageKmeansImageFilter<TInputImage, TOutputImage>::GenerateData()
   {
     // If a region is defined to constrain classification to, we need to label
     // pixels outside with numberOfClasses + 1.
-    using ExclusionImageIteratorType = ImageRegionExclusionIteratorWithIndex<OutputImageType>;
-    ExclusionImageIteratorType exIt(outputPtr, outputPtr->GetBufferedRegion());
+    ImageRegionExclusionIteratorWithIndex<OutputImageType> exIt(outputPtr, outputPtr->GetBufferedRegion());
     exIt.SetExclusionRegion(region);
     exIt.GoToBegin();
     if (m_UseNonContiguousLabels)

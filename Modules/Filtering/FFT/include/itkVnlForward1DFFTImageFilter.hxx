@@ -58,10 +58,8 @@ VnlForward1DFFTImageFilter<TInputImage, TOutputImage>::GenerateData()
     direction,
     output->GetRequestedRegion(),
     [input, output, direction, vectorSize](const typename OutputImageType::RegionType & lambdaRegion) {
-      using InputIteratorType = ImageLinearConstIteratorWithIndex<InputImageType>;
-      using OutputIteratorType = ImageLinearIteratorWithIndex<OutputImageType>;
-      InputIteratorType  inputIt(input, lambdaRegion);
-      OutputIteratorType outputIt(output, lambdaRegion);
+      ImageLinearConstIteratorWithIndex<InputImageType> inputIt(input, lambdaRegion);
+      ImageLinearIteratorWithIndex<OutputImageType>     outputIt(output, lambdaRegion);
 
       inputIt.SetDirection(direction);
       outputIt.SetDirection(direction);

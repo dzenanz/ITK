@@ -94,11 +94,10 @@ CompareHistogramImageToImageMetric<TFixedImage, TMovingImage>::FormTrainingHisto
   this->m_TrainingHistogram->SetMeasurementVectorSize(2);
   this->m_TrainingHistogram->Initialize(
     this->Superclass::m_HistogramSize, this->Superclass::m_LowerBound, this->Superclass::m_UpperBound);
-  using TrainingFixedIteratorType = ImageRegionConstIteratorWithIndex<FixedImageType>;
   typename FixedImageType::IndexType index;
   typename HistogramType::IndexType  hIndex;
 
-  TrainingFixedIteratorType ti(this->m_TrainingFixedImage, this->m_TrainingFixedImageRegion);
+  ImageRegionConstIteratorWithIndex<FixedImageType> ti(this->m_TrainingFixedImage, this->m_TrainingFixedImageRegion);
 
   int NumberOfPixelsCounted = 0;
 

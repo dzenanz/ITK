@@ -150,8 +150,7 @@ AccumulateImageFilter<TInputImage, TOutputImage>::GenerateData()
 
   // Accumulate over the Nth dimension ( = m_AccumulateDimension)
   // and divide by the size of the accumulated dimension.
-  using outputIterType = ImageRegionIteratorWithIndex<TOutputImage>;
-  outputIterType outputIter(outputImage, outputImage->GetBufferedRegion());
+  ImageRegionIteratorWithIndex<TOutputImage> outputIter(outputImage, outputImage->GetBufferedRegion());
   using inputIterType = ImageRegionConstIterator<TInputImage>;
 
   typename TInputImage::SizeType  AccumulatedSize = inputImage->GetLargestPossibleRegion().GetSize();

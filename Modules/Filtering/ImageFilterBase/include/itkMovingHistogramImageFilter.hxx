@@ -88,8 +88,7 @@ MovingHistogramImageFilter<TInputImage, TOutputImage, TKernel, THistogram>::Dyna
   const OffsetListType * addedList = &this->m_AddedOffsets[offset];
   const OffsetListType * removedList = &this->m_RemovedOffsets[offset];
 
-  using InputLineIteratorType = ImageLinearConstIteratorWithIndex<InputImageType>;
-  InputLineIteratorType InLineIt(inputImage, outputRegionForThread);
+  ImageLinearConstIteratorWithIndex<InputImageType> InLineIt(inputImage, outputRegionForThread);
   InLineIt.SetDirection(BestDirection);
 
   InLineIt.GoToBegin();

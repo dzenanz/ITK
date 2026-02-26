@@ -83,8 +83,7 @@ void
 MutualInformationImageToImageMetric<TFixedImage, TMovingImage>::SampleFixedImageDomain(
   SpatialSampleContainer & samples) const
 {
-  using RandomIterator = ImageRandomConstIteratorWithIndex<FixedImageType>;
-  RandomIterator randIter(this->m_FixedImage, this->GetFixedImageRegion());
+  ImageRandomConstIteratorWithIndex<FixedImageType> randIter(this->m_FixedImage, this->GetFixedImageRegion());
   if (this->m_ReseedIterator)
   {
     randIter.ReinitializeSeed();
