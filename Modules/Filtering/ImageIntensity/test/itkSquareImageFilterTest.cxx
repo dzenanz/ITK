@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkSquareImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkTestingMacros.h"
 

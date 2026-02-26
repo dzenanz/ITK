@@ -19,7 +19,6 @@
 #define itkFastChamferDistanceImageFilter_h
 
 #include "itkImageToImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNarrowBand.h"
 
 namespace itk

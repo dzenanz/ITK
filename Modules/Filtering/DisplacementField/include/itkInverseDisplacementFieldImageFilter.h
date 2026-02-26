@@ -20,7 +20,6 @@
 
 #include "itkImageToImageFilter.h"
 #include "itkKernelTransform.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {

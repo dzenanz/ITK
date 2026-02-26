@@ -24,7 +24,6 @@
 
 #include "itkImage.h"
 #include "itkDiscreteLevelSetImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkBinaryThresholdImageFilter.h"
 #include "itkSignedMaurerDistanceMapImageFilter.h"
 #include "itkNumericTraits.h"

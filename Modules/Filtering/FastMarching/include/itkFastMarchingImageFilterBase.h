@@ -20,7 +20,6 @@
 #define itkFastMarchingImageFilterBase_h
 
 #include "itkFastMarchingBase.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkNeighborhoodIterator.h"
 #include "itkArray.h"
 #include <bitset>

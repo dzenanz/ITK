@@ -18,13 +18,11 @@
 #ifndef itkRankImageFilter_hxx
 #define itkRankImageFilter_hxx
 
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkOffset.h"
 #include "itkProgressReporter.h"
 #include "itkNumericTraits.h"
 
 #include "itkImageRegionIterator.h"
-#include "itkImageLinearConstIteratorWithIndex.h"
 
 #include <iomanip>
 #include <sstream>

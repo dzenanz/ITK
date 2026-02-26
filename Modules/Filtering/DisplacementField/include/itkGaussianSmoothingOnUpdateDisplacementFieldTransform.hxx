@@ -23,7 +23,7 @@
 #include "itkGaussianOperator.h"
 #include "itkImageAlgorithm.h"
 #include "itkImageDuplicator.h"
-#include "itkImageLinearIteratorWithIndex.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkImportImageFilter.h"
 #include "itkMultiplyImageFilter.h"
 #include "itkVectorNeighborhoodOperatorImageFilter.h"

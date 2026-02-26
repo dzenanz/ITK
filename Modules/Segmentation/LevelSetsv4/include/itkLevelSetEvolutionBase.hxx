@@ -20,6 +20,7 @@
 #ifndef itkLevelSetEvolutionBase_hxx
 #define itkLevelSetEvolutionBase_hxx
 
+#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {

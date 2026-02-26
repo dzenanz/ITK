@@ -25,7 +25,6 @@
 #include "itkKdTreeGenerator.h"
 
 #include "itkImageRegionIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
 
 namespace itk
 {

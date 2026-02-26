@@ -21,7 +21,6 @@
 
 #include "itkImageAlgorithm.h"
 #include "itkContinuousIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkImportImageFilter.h"
 
 namespace itk

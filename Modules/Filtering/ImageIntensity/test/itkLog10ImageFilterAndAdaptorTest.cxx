@@ -18,6 +18,7 @@
 
 #include "itkLog10ImageFilter.h"
 #include "itkLog10ImageAdaptor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSubtractImageFilter.h"
 #include "itkTestingMacros.h"

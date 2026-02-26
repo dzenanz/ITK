@@ -18,7 +18,6 @@
 #ifndef itkLaplacianRecursiveGaussianImageFilter_hxx
 #define itkLaplacianRecursiveGaussianImageFilter_hxx
 
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkProgressAccumulator.h"
 #include "itkCastImageFilter.h"
 #include "itkBinaryGeneratorImageFilter.h"

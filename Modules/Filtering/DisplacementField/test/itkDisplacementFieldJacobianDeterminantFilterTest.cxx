@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include "itkDisplacementFieldJacobianDeterminantFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNullImageToImageFilterDriver.hxx"
 #include "itkStdStreamStateSave.h"
 #include "itkTestingMacros.h"

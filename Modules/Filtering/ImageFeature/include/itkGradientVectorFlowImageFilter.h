@@ -24,7 +24,6 @@
 #include "itkVector.h"
 #include "itkLaplacianImageFilter.h"
 #include "itkImageRegionIterator.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {

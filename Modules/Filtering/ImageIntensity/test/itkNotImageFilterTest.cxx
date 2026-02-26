@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkNotImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkTestingMacros.h"
 
 

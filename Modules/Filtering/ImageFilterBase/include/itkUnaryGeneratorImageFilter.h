@@ -20,7 +20,6 @@
 
 #include "itkMath.h"
 #include "itkInPlaceImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 
 #include <functional>
 

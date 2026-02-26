@@ -33,6 +33,10 @@
 #include "itkLevelSetEvolutionComputeIterationThreader.h"
 #include "itkLevelSetEvolutionUpdateLevelSetsThreader.h"
 
+#include "itkImageRegionConstIteratorWithIndex.h"
+#include "itkImageRegionIteratorWithIndex.h"
+
+
 namespace itk
 {
 /**

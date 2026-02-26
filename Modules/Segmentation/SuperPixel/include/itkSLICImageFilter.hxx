@@ -22,7 +22,6 @@
 #include "itkConstNeighborhoodIterator.h"
 #include "itkImageRegionIterator.h"
 
-#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkImageScanlineIterator.h"
 #include "itkShapedNeighborhoodIterator.h"
 #include "itkConstantBoundaryCondition.h"

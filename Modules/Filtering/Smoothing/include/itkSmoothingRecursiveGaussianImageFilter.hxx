@@ -18,7 +18,6 @@
 #ifndef itkSmoothingRecursiveGaussianImageFilter_hxx
 #define itkSmoothingRecursiveGaussianImageFilter_hxx
 
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk

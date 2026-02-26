@@ -16,6 +16,7 @@
  *
  *=========================================================================*/
 
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkSigmoidImageFilter.h"
 #include "itkTestingMacros.h"

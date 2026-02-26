@@ -19,7 +19,6 @@
 #define itkTernaryFunctorImageFilter_h
 
 #include "itkInPlaceImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 
 namespace itk
 {

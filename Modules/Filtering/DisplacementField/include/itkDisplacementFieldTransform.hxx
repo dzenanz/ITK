@@ -21,7 +21,6 @@
 #include "itkVectorLinearInterpolateImageFunction.h"
 #include "itkImageToImageFilter.h"
 
-#include "itkImageRegionIteratorWithIndex.h"
 #include "vnl/algo/vnl_symmetric_eigensystem.h"
 #include "vnl/algo/vnl_matrix_inverse.h"
 #include "itkCastImageFilter.h"

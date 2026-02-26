@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include "itkImageFileWriter.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkNarrowBandImageFilterBase.h"
 #include "itkCurvatureFlowFunction.h"
 #include "itkRandomImageSource.h"

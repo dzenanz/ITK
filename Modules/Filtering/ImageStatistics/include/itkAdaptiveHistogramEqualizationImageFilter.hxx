@@ -23,7 +23,6 @@
 #include "itkMath.h"
 
 #include "itkImageRegionIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkConstNeighborhoodIterator.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkProgressReporter.h"

@@ -21,7 +21,6 @@
 
 #include "itkIdentityTransform.h"
 #include "itkTotalProgressReporter.h"
-#include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageScanlineIterator.h"
 
 namespace itk

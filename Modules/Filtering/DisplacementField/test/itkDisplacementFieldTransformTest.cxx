@@ -21,6 +21,7 @@
 #include "itkDisplacementFieldTransform.h"
 #include "itkCenteredAffineTransform.h"
 #include "itkStdStreamStateSave.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
 #include "itkNumericTraits.h"
 #include "itkTestingMacros.h"

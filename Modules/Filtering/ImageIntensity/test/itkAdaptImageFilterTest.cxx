@@ -35,6 +35,7 @@
 #include "itkRedPixelAccessor.h"
 #include "itkGreenPixelAccessor.h"
 #include "itkBluePixelAccessor.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkSimpleFilterWatcher.h"
 #include "itkMath.h"
 
