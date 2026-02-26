@@ -59,12 +59,10 @@ CheckerBoardImageFilter<TImage>::DynamicThreadedGenerateData(const ImageRegionTy
   const InputImageConstPointer input2Ptr = this->GetInput(1);
 
   // Create an iterator that will walk the output region for this thread.
-  using OutputIterator = ImageRegionIteratorWithIndex<OutputImageType>;
-  using InputIterator = ImageRegionConstIteratorWithIndex<InputImageType>;
 
-  OutputIterator outItr(outputPtr, outputRegionForThread);
-  InputIterator  in1Itr(input1Ptr, outputRegionForThread);
-  InputIterator  in2Itr(input2Ptr, outputRegionForThread);
+  ImageRegionIteratorWithIndex<OutputImageType>     outItr(outputPtr, outputRegionForThread);
+  ImageRegionConstIteratorWithIndex<InputImageType> in1Itr(input1Ptr, outputRegionForThread);
+  ImageRegionConstIteratorWithIndex<InputImageType> in2Itr(input2Ptr, outputRegionForThread);
 
   TotalProgressReporter progress(this, outputPtr->GetRequestedRegion().GetNumberOfPixels());
 
