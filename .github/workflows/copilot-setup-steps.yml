@@ -27,20 +27,6 @@ jobs:
           fetch-depth: 5
           clean: true
 
-      - name: Free Disk Space (Ubuntu)
-        uses: BRAINSia/free-disk-space@v2
-        with:
-          removalmode: "rmz"
-
-          swap-storage:   "true"
-          haskell:        "true"
-          dotnet:         "true"
-          docker-images:  "false" # Takes too long
-          tool-cache:     "true"
-          android:        "false" # Takes too long
-          large-packages: "true"  # Takes too long to remove apt-get packages
-          mandb:          "true"  # Speeds up future apt-get installs (disables man page generation), this CI does not use apt-get
-
       - name: Download testing data
         run: |
           curl -L https://github.com/InsightSoftwareConsortium/ITK/releases/download/v5.4.5/InsightData-5.4.5.tar.gz -O
@@ -52,18 +38,3 @@ jobs:
 
       - name: Configure
         run: pixi run configure
-
-      - name: Build
-        run: |
-          echo "****** df -h /  -- pre build"
-          df -h /
-          pixi run --skip-deps build
-          echo "****** df -h /  -- post build"
-          df -h /
-          find build -type f -name "*.o" -delete
-          find build -type f -name "*.a" -delete
-          echo "****** df -h /  -- post .o .a cleanup"
-          df -h /
-
-      - name: Test
-        run: pixi run --skip-deps test
