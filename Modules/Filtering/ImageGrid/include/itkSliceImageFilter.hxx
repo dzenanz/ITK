@@ -131,12 +131,11 @@ SliceImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   }
 
   // Define/declare an iterator that will walk the output region for this thread
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   OutputIndexType destIndex;
   InputIndexType  srcIndex;
 
-  for (OutputIterator outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
+  for (ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
   {
     // Determine the index and physical location of the output pixel
     destIndex = outIt.GetIndex();

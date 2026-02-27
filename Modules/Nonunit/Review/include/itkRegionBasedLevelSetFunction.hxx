@@ -81,11 +81,9 @@ RegionBasedLevelSetFunction<TInput, TFeature, TSharedData>::ComputeHImage()
     this->m_SharedData->m_LevelSetDataPointerVector[this->m_FunctionId]->m_HeavisideFunctionOfLevelSetImage;
 
   // Iterator for the phi function
-  using ConstImageIteratorType = ImageRegionConstIteratorWithIndex<InputImageType>;
-  ConstImageIteratorType constIt(contourImage, contourImage->GetRequestedRegion());
+  ImageRegionConstIteratorWithIndex<InputImageType> constIt(contourImage, contourImage->GetRequestedRegion());
 
-  using ImageIteratorType = ImageRegionIteratorWithIndex<InputImageType>;
-  ImageIteratorType It(hBuffer, hBuffer->GetRequestedRegion());
+  ImageRegionIteratorWithIndex<InputImageType> It(hBuffer, hBuffer->GetRequestedRegion());
 
   It.GoToBegin(), constIt.GoToBegin();
 

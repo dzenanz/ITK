@@ -114,12 +114,11 @@ SpatialObjectToImageStatisticsCalculator<TInputImage, TInputSpatialObject, TSamp
 
     const typename MaskImageType::ConstPointer maskImage = maskSpatialObject->GetImage();
 
-    using MaskIteratorType = ImageRegionConstIteratorWithIndex<MaskImageType>;
-    MaskIteratorType it(maskImage, maskImage->GetLargestPossibleRegion());
-    IndexType        ind;
-    PointType        pnt;
-    PointType        tPnt;
-    VectorType       mv;
+    ImageRegionConstIteratorWithIndex<MaskImageType> it(maskImage, maskImage->GetLargestPossibleRegion());
+    IndexType                                        ind;
+    PointType                                        pnt;
+    PointType                                        tPnt;
+    VectorType                                       mv;
     while (!it.IsAtEnd())
     {
       if (it.Get() > 0) // if inside the mask
@@ -180,11 +179,10 @@ SpatialObjectToImageStatisticsCalculator<TInputImage, TInputSpatialObject, TSamp
 
     const RegionType region(indMin, size);
 
-    using IteratorType = ImageRegionConstIteratorWithIndex<ImageType>;
-    IteratorType it(m_Image, region);
-    IndexType    ind;
-    PointType    pnt;
-    VectorType   mv;
+    ImageRegionConstIteratorWithIndex<ImageType> it(m_Image, region);
+    IndexType                                    ind;
+    PointType                                    pnt;
+    VectorType                                   mv;
     while (!it.IsAtEnd())
     {
       ind = it.GetIndex();

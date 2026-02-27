@@ -150,11 +150,10 @@ InverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::PrepareKernelBas
 
   const InputImageType * sampledInput = resampler->GetOutput();
 
-  using IteratorType = ImageRegionConstIteratorWithIndex<InputImageType>;
 
   unsigned int landmarkId = 0;
 
-  IteratorType ot(sampledInput, subsampledRegion);
+  ImageRegionConstIteratorWithIndex<InputImageType> ot(sampledInput, subsampledRegion);
 
   OutputPixelType               value;
   Point<double, ImageDimension> sourcePoint;
@@ -213,7 +212,6 @@ InverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
   outputPtr->Allocate();
 
   // Create an iterator that will walk the output region for this thread.
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   const OutputImageRegionType region = outputPtr->GetRequestedRegion();
 
@@ -230,7 +228,7 @@ InverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
   ProgressReporter progress(this, 0, region.GetNumberOfPixels(), 10);
 
   // Walk the output region
-  for (OutputIterator outIt(outputPtr, region); !outIt.IsAtEnd(); ++outIt)
+  for (ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, region); !outIt.IsAtEnd(); ++outIt)
   {
     // Determine the index of the current output pixel
     outputIndex = outIt.GetIndex();

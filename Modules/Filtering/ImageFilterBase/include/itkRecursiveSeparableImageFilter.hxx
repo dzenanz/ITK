@@ -237,8 +237,6 @@ RecursiveSeparableImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerat
 {
   using OutputPixelType = typename TOutputImage::PixelType;
 
-  using InputConstIteratorType = ImageLinearConstIteratorWithIndex<TInputImage>;
-  using OutputIteratorType = ImageLinearIteratorWithIndex<TOutputImage>;
 
   using RegionType = ImageRegion<TInputImage::ImageDimension>;
 
@@ -247,8 +245,8 @@ RecursiveSeparableImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerat
 
   const RegionType region = outputRegionForThread;
 
-  InputConstIteratorType inputIterator(inputImage, region);
-  OutputIteratorType     outputIterator(outputImage, region);
+  ImageLinearConstIteratorWithIndex<TInputImage> inputIterator(inputImage, region);
+  ImageLinearIteratorWithIndex<TOutputImage>     outputIterator(outputImage, region);
 
   inputIterator.SetDirection(this->m_Direction);
   outputIterator.SetDirection(this->m_Direction);

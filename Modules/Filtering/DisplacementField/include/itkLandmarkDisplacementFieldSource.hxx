@@ -115,7 +115,6 @@ LandmarkDisplacementFieldSource<TOutputImage>::GenerateData()
   outputPtr->Allocate();
 
   // Create an iterator that will walk the output region for this thread.
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   const OutputImageRegionType region = outputPtr->GetRequestedRegion();
 
@@ -132,7 +131,7 @@ LandmarkDisplacementFieldSource<TOutputImage>::GenerateData()
   ProgressReporter progress(this, 0, region.GetNumberOfPixels(), 10);
 
   // Walk the output region
-  for (OutputIterator outIt(outputPtr, region); !outIt.IsAtEnd(); ++outIt)
+  for (ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, region); !outIt.IsAtEnd(); ++outIt)
   {
     // Determine the index of the current output pixel
     outputIndex = outIt.GetIndex();

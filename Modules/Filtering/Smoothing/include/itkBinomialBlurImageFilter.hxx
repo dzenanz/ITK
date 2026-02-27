@@ -115,7 +115,6 @@ BinomialBlurImageFilter<TInputImage, TOutputImage>::GenerateData()
   typename TInputImage::IndexType startIndex = inputPtr->GetRequestedRegion().GetIndex();
 
   // Iterator Typedefs for this routine
-  using TempIterator = ImageRegionIteratorWithIndex<TTempImage>;
   using TempReverseIterator = ImageRegionReverseIterator<TTempImage>;
   using InputIterator = ImageRegionConstIterator<TInputImage>;
   using OutputIterator = ImageRegionIterator<TOutputImage>;
@@ -125,8 +124,8 @@ BinomialBlurImageFilter<TInputImage, TOutputImage>::GenerateData()
     this, 0, (outputPtr->GetRequestedRegion().GetNumberOfPixels()) * m_Repetitions * 2 * NDimensions);
 
   // Copy the input image to the temporary image
-  TempIterator  tempIt(tempPtr, tempPtr->GetRequestedRegion());
-  InputIterator inputIt(inputPtr, inputPtr->GetRequestedRegion());
+  ImageRegionIteratorWithIndex<TTempImage> tempIt(tempPtr, tempPtr->GetRequestedRegion());
+  InputIterator                            inputIt(inputPtr, inputPtr->GetRequestedRegion());
 
   for (inputIt.GoToBegin(), tempIt.GoToBegin(); !tempIt.IsAtEnd(); ++tempIt, ++inputIt)
   {
@@ -146,7 +145,7 @@ BinomialBlurImageFilter<TInputImage, TOutputImage>::GenerateData()
     // blur each dimension
     for (unsigned int dim = 0; dim < NDimensions; ++dim)
     {
-      TempIterator tempItDir(tempPtr, tempPtr->GetRequestedRegion());
+      ImageRegionIteratorWithIndex<TTempImage> tempItDir(tempPtr, tempPtr->GetRequestedRegion());
       tempItDir.GoToBegin();
       while (!tempItDir.IsAtEnd())
       {
@@ -229,8 +228,8 @@ BinomialBlurImageFilter<TInputImage, TOutputImage>::GenerateData()
   // buffer iterator walks a region defined by the output
   using OutputIterator = ImageRegionIterator<TOutputImage>;
 
-  OutputIterator outIt(outputPtr, outputPtr->GetRequestedRegion());
-  TempIterator   tempIt2(tempPtr, outputPtr->GetRequestedRegion());
+  OutputIterator                           outIt(outputPtr, outputPtr->GetRequestedRegion());
+  ImageRegionIteratorWithIndex<TTempImage> tempIt2(tempPtr, outputPtr->GetRequestedRegion());
 
   for (outIt.GoToBegin(), tempIt2.GoToBegin(); !outIt.IsAtEnd(); ++outIt, ++tempIt2)
   {

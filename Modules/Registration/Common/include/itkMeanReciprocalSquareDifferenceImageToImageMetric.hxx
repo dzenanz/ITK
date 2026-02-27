@@ -52,9 +52,8 @@ MeanReciprocalSquareDifferenceImageToImageMetric<TFixedImage, TMovingImage>::Get
   {
     itkExceptionStringMacro("Fixed image has not been assigned");
   }
-  using FixedIteratorType = ImageRegionConstIteratorWithIndex<FixedImageType>;
 
-  FixedIteratorType ti(fixedImage, this->GetFixedImageRegion());
+  ImageRegionConstIteratorWithIndex<FixedImageType> ti(fixedImage, this->GetFixedImageRegion());
 
   typename FixedImageType::IndexType index;
 

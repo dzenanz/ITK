@@ -460,8 +460,7 @@ ImageToImageMetric<TFixedImage, TMovingImage>::SampleFixedImageRegion(FixedImage
   }
 
   // Set up a random iterator within the user specified fixed image region.
-  using RandomIterator = ImageRandomConstIteratorWithIndex<FixedImageType>;
-  RandomIterator randIter(m_FixedImage, GetFixedImageRegion());
+  ImageRandomConstIteratorWithIndex<FixedImageType> randIter(m_FixedImage, GetFixedImageRegion());
   randIter.ReinitializeSeed(Statistics::MersenneTwisterRandomVariateGenerator::GetInstance()->GetSeed());
   if (m_ReseedIterator)
   {
@@ -576,8 +575,7 @@ ImageToImageMetric<TFixedImage, TMovingImage>::SampleFullFixedImageRegion(FixedI
   }
 
   // Set up a region iterator within the user specified fixed image region.
-  using RegionIterator = ImageRegionConstIteratorWithIndex<FixedImageType>;
-  RegionIterator regionIter(m_FixedImage, GetFixedImageRegion());
+  ImageRegionConstIteratorWithIndex<FixedImageType> regionIter(m_FixedImage, GetFixedImageRegion());
 
   regionIter.GoToBegin();
 

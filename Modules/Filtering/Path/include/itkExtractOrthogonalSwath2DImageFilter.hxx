@@ -115,14 +115,15 @@ ExtractOrthogonalSwath2DImageFilter<TImage>::GenerateData()
   // support progress methods/callbacks
   ProgressReporter progress(this, 0, outputRegion.GetNumberOfPixels());
 
-  using OutputIterator = ImageRegionIteratorWithIndex<ImageType>;
   using InterpolatorType = LinearInterpolateImageFunction<ImageType, itk::SpacePrecisionType>;
 
   auto interpolator = InterpolatorType::New();
   interpolator->SetInputImage(inputImagePtr);
 
   // Iterate through the output image
-  for (OutputIterator outputIt(outputPtr, outputPtr->GetRequestedRegion()); !outputIt.IsAtEnd(); ++outputIt)
+  for (ImageRegionIteratorWithIndex<ImageType> outputIt(outputPtr, outputPtr->GetRequestedRegion());
+       !outputIt.IsAtEnd();
+       ++outputIt)
   {
     ImageIndexType index = outputIt.GetIndex();
 

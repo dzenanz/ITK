@@ -301,7 +301,6 @@ DiffusionTensor3DReconstructionImageFilter<TReferenceImagePixelType,
   else if (m_GradientImageTypeEnumeration ==
            DiffusionTensor3DReconstructionImageFilterEnums::GradientImageFormat::GradientIsInASingleImage)
   {
-    using GradientIteratorType = ImageRegionConstIteratorWithIndex<GradientImagesType>;
     using GradientVectorType = typename GradientImagesType::PixelType;
     typename GradientImagesType::Pointer gradientImagePointer = nullptr;
 
@@ -309,7 +308,7 @@ DiffusionTensor3DReconstructionImageFilter<TReferenceImagePixelType,
     // The enum will ensure that an inappropriate cast is not done
     gradientImagePointer = itkDynamicCastInDebugMode<GradientImagesType *>(this->ProcessObject::GetInput(0));
 
-    GradientIteratorType git(gradientImagePointer, outputRegionForThread);
+    ImageRegionConstIteratorWithIndex<GradientImagesType> git(gradientImagePointer, outputRegionForThread);
     git.GoToBegin();
 
     // Compute the indices of the baseline images and gradient images

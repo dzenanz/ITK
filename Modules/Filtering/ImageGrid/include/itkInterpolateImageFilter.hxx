@@ -146,7 +146,6 @@ InterpolateImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
   const OutputImagePointer outputPtr = this->GetOutput();
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   using OutputPixelType = typename TOutputImage::PixelType;
   using IndexType = typename TOutputImage::IndexType;
@@ -158,7 +157,7 @@ InterpolateImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   TotalProgressReporter progress(this, outputPtr->GetRequestedRegion().GetNumberOfPixels());
 
   // Walk the output region
-  for (OutputIterator outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
+  for (ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
   {
     // Determine the intermediate image index
     outputIndex = outIt.GetIndex();

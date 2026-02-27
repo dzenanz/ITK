@@ -104,7 +104,6 @@ VectorExpandImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
   const OutputImagePointer outputPtr = this->GetOutput();
-  using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   TotalProgressReporter progress(this, outputPtr->GetRequestedRegion().GetNumberOfPixels());
 
@@ -119,7 +118,7 @@ VectorExpandImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   InterpolatedType interpolatedValue;
 
   // Walk the output region, and interpolate the input image
-  for (OutputIterator outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
+  for (ImageRegionIteratorWithIndex<TOutputImage> outIt(outputPtr, outputRegionForThread); !outIt.IsAtEnd(); ++outIt)
   {
     // Determine the index of the output pixel
     outputIndex = outIt.GetIndex();
