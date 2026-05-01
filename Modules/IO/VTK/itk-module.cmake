@@ -1,15 +1,24 @@
-set(DOCUMENTATION "This module contains classes for reading and writing image
-files in the \"legacy\" (non-XML) VTK file format.")
+set(
+  DOCUMENTATION
+  "This module contains classes for reading and writing image
+files in the \"legacy\" (non-XML) VTK file format and the VTK XML
+ImageData (.vti) file format."
+)
 
 itk_module(
   ITKIOVTK
   ENABLE_SHARED
   PRIVATE_DEPENDS
   ITKIOImageBase
+  PRIVATE_DEPENDS
+    ITKExpat
+    ITKZLIB
   TEST_DEPENDS
   ITKTestKernel
   ITKImageSources
+    ITKZLIB
   FACTORY_NAMES
   ImageIO::VTK
-  DESCRIPTION
-  "${DOCUMENTATION}")
+    ImageIO::VTI
+  DESCRIPTION "${DOCUMENTATION}"
+)
