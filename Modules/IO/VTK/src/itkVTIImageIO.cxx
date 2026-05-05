@@ -19,7 +19,11 @@
 #include "itkByteSwapper.h"
 #include "itkMakeUniqueForOverwrite.h"
 
-#include "itk_expat.h"
+#if ITK_VERSION_MAJOR > 5
+#  include "itk_expat.h"
+#else
+#  include "expat.h"
+#endif
 #include "itk_zlib.h"
 #include "itksys/Base64.h"
 
