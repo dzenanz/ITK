@@ -26,7 +26,9 @@
 #include "itk_eigen.h"
 #include ITK_EIGEN(Dense)
 
-namespace itk::bridge
+namespace itk
+{
+namespace bridge
 {
 
 /** \class GeneralizedEigenDecomposition
@@ -82,7 +84,7 @@ public:
 
     if (canonicalizeSigns)
     {
-      detail::CanonicalizeEigenvectorColumnSigns(m_Eigenvectors);
+      ::itk::bridge::detail::CanonicalizeEigenvectorColumnSigns(m_Eigenvectors);
     }
   }
 
@@ -105,6 +107,7 @@ private:
   MatrixType m_Eigenvectors;
 };
 
-} // namespace itk::bridge
+} // namespace bridge
+} // namespace itk
 
 #endif // itkBridgeGeneralizedEigenDecomposition_h

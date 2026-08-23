@@ -21,7 +21,11 @@
 #include "itk_eigen.h"
 #include ITK_EIGEN(Dense)
 
-namespace itk::bridge::detail
+namespace itk
+{
+namespace bridge
+{
+namespace detail
 {
 
 /** Human-readable name and likely cause for an Eigen solver status, so a
@@ -43,6 +47,8 @@ EigenComputationInfoString(Eigen::ComputationInfo info)
   return "an unrecognized Eigen::ComputationInfo value";
 }
 
-} // namespace itk::bridge::detail
+} // namespace detail
+} // namespace bridge
+} // namespace itk
 
 #endif // itkBridgeEigenDecompositionSolverInfo_h
