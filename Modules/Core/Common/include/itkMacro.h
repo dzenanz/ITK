@@ -292,7 +292,7 @@ namespace itk
 #define itkSimpleNewMacro(x)                              \
   static Pointer New()                                    \
   {                                                       \
-    Pointer smartPtr = ::itk::ObjectFactory<x>::Create(); \
+    Pointer smartPtr = ::ITK_NAMESPACE::ObjectFactory<x>::Create(); \
     if (smartPtr == nullptr)                              \
     {                                                     \
       smartPtr = new x();                                 \
@@ -303,7 +303,7 @@ namespace itk
   ITK_MACROEND_NOOP_STATEMENT
 
 #define itkCreateAnotherMacro(x)                                                               \
-  ::itk::LightObject::Pointer CreateAnother() const override { return x::New().GetPointer(); } \
+  ::ITK_NAMESPACE::LightObject::Pointer CreateAnother() const override { return x::New().GetPointer(); } \
   ITK_MACROEND_NOOP_STATEMENT
 
 #define itkCloneMacro(x)                                                  \
@@ -327,7 +327,7 @@ namespace itk
 #define itkSimpleFactoryOnlyNewMacro(x)                                                                 \
   static auto New() -> Pointer                                                                          \
   {                                                                                                     \
-    Pointer smartPtr = ::itk::ObjectFactory<x>::Create();                                               \
+    Pointer smartPtr = ::ITK_NAMESPACE::ObjectFactory<x>::Create();                                               \
     if (smartPtr == nullptr)                                                                            \
     {                                                                                                   \
       itkSpecializedMessageExceptionMacro(ExceptionObject,                                              \
@@ -529,12 +529,12 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
 #else
 #  define itkDebugMacro(x)                                                                                           \
     {                                                                                                                \
-      using namespace ::itk::print_helper; /* for ostream << std::vector<T> */                                       \
-      if (this->GetDebug() && ::itk::Object::GetGlobalWarningDisplay())                                              \
+      using namespace ::ITK_NAMESPACE::print_helper; /* for ostream << std::vector<T> */                                       \
+      if (this->GetDebug() && ::ITK_NAMESPACE::Object::GetGlobalWarningDisplay())                                              \
       {                                                                                                              \
         std::ostringstream itkmsg;                                                                                   \
         itkmsg << "" x;                                                                                              \
-        ::itk::OutputWindowDisplayDebugText(__FILE__, __LINE__, this->GetNameOfClass(), this, itkmsg.str().c_str()); \
+        ::ITK_NAMESPACE::OutputWindowDisplayDebugText(__FILE__, __LINE__, this->GetNameOfClass(), this, itkmsg.str().c_str()); \
       }                                                                                                              \
     }                                                                                                                \
     ITK_MACROEND_NOOP_STATEMENT
@@ -548,11 +548,11 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
  * itkWarningMacro("this is warning info" << this->SomeVariable); */
 #define itkWarningMacro(x)                                                                                           \
   {                                                                                                                  \
-    if (::itk::Object::GetGlobalWarningDisplay())                                                                    \
+    if (::ITK_NAMESPACE::Object::GetGlobalWarningDisplay())                                                                    \
     {                                                                                                                \
       std::ostringstream itkmsg;                                                                                     \
       itkmsg << "" x;                                                                                                \
-      ::itk::OutputWindowDisplayWarningText(__FILE__, __LINE__, this->GetNameOfClass(), this, itkmsg.str().c_str()); \
+      ::ITK_NAMESPACE::OutputWindowDisplayWarningText(__FILE__, __LINE__, this->GetNameOfClass(), this, itkmsg.str().c_str()); \
     }                                                                                                                \
   }                                                                                                                  \
   ITK_MACROEND_NOOP_STATEMENT
@@ -592,14 +592,14 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
   {                                                                                                                  \
     std::ostringstream exceptionDescriptionOutputStringStream;                                                       \
     exceptionDescriptionOutputStringStream << "" x;                                                                  \
-    throw ::itk::ExceptionType(                                                                                      \
+    throw ::ITK_NAMESPACE::ExceptionType(                                                                                      \
       std::string{ __FILE__ }, __LINE__, exceptionDescriptionOutputStringStream.str(), std::string{ ITK_LOCATION }); \
   }                                                                                                                  \
   ITK_MACROEND_NOOP_STATEMENT
 
 #define itkSpecializedExceptionMacro(ExceptionType) \
-  throw ::itk::ExceptionType(                       \
-    std::string{ __FILE__ }, __LINE__, ::itk::ExceptionType::default_exception_message, std::string{ ITK_LOCATION });
+  throw ::ITK_NAMESPACE::ExceptionType(                       \
+    std::string{ __FILE__ }, __LINE__, ::ITK_NAMESPACE::ExceptionType::default_exception_message, std::string{ ITK_LOCATION });
 
 
 /** The itkExceptionMacro macro is used to print error information (i.e., usually
@@ -609,7 +609,7 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
   {                                                                            \
     std::ostringstream exceptionDescriptionOutputStringStream;                 \
     exceptionDescriptionOutputStringStream << "" x;                            \
-    throw ::itk::ExceptionObject(std::string{ __FILE__ },                      \
+    throw ::ITK_NAMESPACE::ExceptionObject(std::string{ __FILE__ },                      \
                                  __LINE__,                                     \
                                  exceptionDescriptionOutputStringStream.str(), \
                                  std::string{ ITK_LOCATION },                  \
@@ -619,7 +619,7 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
 
 #define itkExceptionStringMacro(x)                                                             \
   {                                                                                            \
-    throw ::itk::ExceptionObject(                                                              \
+    throw ::ITK_NAMESPACE::ExceptionObject(                                                              \
       std::string{ __FILE__ }, __LINE__, std::string{ x }, std::string{ ITK_LOCATION }, this); \
   }                                                                                            \
   ITK_MACROEND_NOOP_STATEMENT
@@ -628,11 +628,11 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
 
 #define itkGenericOutputMacro(x)                                                             \
   {                                                                                          \
-    if (::itk::Object::GetGlobalWarningDisplay())                                            \
+    if (::ITK_NAMESPACE::Object::GetGlobalWarningDisplay())                                            \
     {                                                                                        \
       std::ostringstream itkmsg;                                                             \
       itkmsg << "" x;                                                                        \
-      ::itk::OutputWindowDisplayGenericOutputText(__FILE__, __LINE__, itkmsg.str().c_str()); \
+      ::ITK_NAMESPACE::OutputWindowDisplayGenericOutputText(__FILE__, __LINE__, itkmsg.str().c_str()); \
     }                                                                                        \
   }                                                                                          \
   ITK_MACROEND_NOOP_STATEMENT
@@ -644,7 +644,7 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
   {                                                      \
     if (this->GetLogger())                               \
     {                                                    \
-      this->GetLogger()->Write(::itk::LoggerBase::x, y); \
+      this->GetLogger()->Write(::ITK_NAMESPACE::LoggerBase::x, y); \
     }                                                    \
   }                                                      \
   ITK_MACROEND_NOOP_STATEMENT
@@ -653,7 +653,7 @@ OutputWindowDisplayGenericOutputText(const char * file, unsigned int line, const
   {                                                     \
     if (obj->GetLogger())                               \
     {                                                   \
-      obj->GetLogger()->Write(::itk::LoggerBase::x, y); \
+      obj->GetLogger()->Write(::ITK_NAMESPACE::LoggerBase::x, y); \
     }                                                   \
   }                                                     \
   ITK_MACROEND_NOOP_STATEMENT
@@ -831,7 +831,7 @@ compilers.
   DestinationType, Sourcrnd_halfintup, DestinationElementType, DestinationArray, SourceArray, NumberOfIterations) \
   for (unsigned int i = 0; i < NumberOfIterations; ++i)                                                           \
   {                                                                                                               \
-    DestinationArray[i] = ::itk::Math::Round<DestinationElementType>(SourceArray[i]);                             \
+    DestinationArray[i] = ::ITK_NAMESPACE::Math::Round<DestinationElementType>(SourceArray[i]);                             \
   }                                                                                                               \
   ITK_MACROEND_NOOP_STATEMENT
 
