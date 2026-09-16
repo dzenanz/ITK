@@ -18,15 +18,22 @@
 
 #include "itkGTest.h"
 
+#include "itkCastImageFilter.h"
 #include "itkImage.h"
+#include "itkImageFileReader.h"
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkMath.h"
+#include "itkPNGImageIOFactory.h"
+#include "itkJPEGImageIOFactory.h"
 #include "itkStructuralSimilarityImageFilter.h"
 
 #include <algorithm>
 #include <cmath>
 #include <random>
+
+#define _STRING(s) #s
+#define TOSTRING(s) std::string(_STRING(s))
 
 namespace
 {
@@ -141,8 +148,29 @@ ComputeFiltered(const ImageType * a, const ImageType * b)
   auto filter = FilterType::New();
   filter->SetInput1(a);
   filter->SetInput2(b);
+  filter->SetScaleWeights(FilterType::ScaleWeightsType(1, 1.0));
   filter->Update();
   return filter->GetMeanSSIM();
+}
+
+ImageType::Pointer
+ReadImageAsDouble(const std::string & fileName)
+{
+  using OnDiskPixelType = unsigned char;
+  using OnDiskImageType = itk::Image<OnDiskPixelType, Dimension2D>;
+  using ReaderType = itk::ImageFileReader<OnDiskImageType>;
+  using CastFilterType = itk::CastImageFilter<OnDiskImageType, ImageType>;
+
+  auto reader = ReaderType::New();
+  reader->SetFileName(fileName);
+
+  auto caster = CastFilterType::New();
+  caster->SetInput(reader->GetOutput());
+  caster->Update();
+
+  ImageType::Pointer image = caster->GetOutput();
+  image->DisconnectPipeline();
+  return image;
 }
 
 } // namespace
@@ -168,8 +196,12 @@ TEST(StructuralSimilarityImageFilter, DefaultParameters)
   EXPECT_DOUBLE_EQ(filter->GetLuminanceExponent(), 1.0);
   EXPECT_DOUBLE_EQ(filter->GetContrastExponent(), 1.0);
   EXPECT_DOUBLE_EQ(filter->GetStructureExponent(), 1.0);
-  EXPECT_EQ(filter->GetScaleWeights().GetSize(), 1u);
-  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[0], 1.0);
+  EXPECT_EQ(filter->GetScaleWeights().GetSize(), 5u);
+  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[0], 0.0448);
+  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[1], 0.2856);
+  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[2], 0.3001);
+  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[3], 0.2363);
+  EXPECT_DOUBLE_EQ(filter->GetScaleWeights()[4], 0.1333);
   // For PixelType=double the default dynamic range is 1.0.
   EXPECT_DOUBLE_EQ(filter->GetDynamicRange(), 1.0);
 }
@@ -291,6 +323,7 @@ TEST(StructuralSimilarityImageFilter, TwoDifferentConstantImages_AnalyticMatch)
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(FilterType::ScaleWeightsType(1, 1.0));
   filter->Update();
 
   const double expected = AnalyticConstantSSIM(100.0, 150.0);
@@ -307,6 +340,7 @@ TEST(StructuralSimilarityImageFilter, MaximallyDifferentConstants_AnalyticMatch)
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(FilterType::ScaleWeightsType(1, 1.0));
   filter->Update();
 
   const double expected = AnalyticConstantSSIM(0.0, 255.0);
@@ -407,7 +441,7 @@ TEST(StructuralSimilarityImageFilter, NonPositiveDynamicRange_Throws)
   EXPECT_THROW(filter->Update(), itk::ExceptionObject);
 }
 
-TEST(StructuralSimilarityImageFilter, MultiScaleScaleWeights_NotYetImplemented_Throws)
+TEST(StructuralSimilarityImageFilter, MultiScaleConstantImage)
 {
   auto a = MakeConstantImage(100.0, 32);
   auto b = MakeConstantImage(100.0, 32);
@@ -417,7 +451,8 @@ TEST(StructuralSimilarityImageFilter, MultiScaleScaleWeights_NotYetImplemented_T
   FilterType::ScaleWeightsType weights(5);
   weights.Fill(0.2);
   filter->SetScaleWeights(weights);
-  EXPECT_THROW(filter->Update(), itk::ExceptionObject);
+  filter->Update();
+  EXPECT_NEAR(filter->GetMeanSSIM(), 1.0, 10e-9);
 }
 
 TEST(StructuralSimilarityImageFilter, EmptyScaleWeights_Throws)
@@ -492,6 +527,7 @@ TEST(StructuralSimilarityImageFilter, GradientShiftedByConstant_SkimageReference
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(FilterType::ScaleWeightsType(1, 1.0));
   filter->Update();
   // Loose tolerance to absorb Gaussian-kernel-discretization differences
   // between ITK's GaussianOperator and scipy's sampled Gaussian.
@@ -508,6 +544,7 @@ TEST(StructuralSimilarityImageFilter, GradientHalfContrast_SkimageReference)
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(FilterType::ScaleWeightsType(1, 1.0));
   filter->Update();
   EXPECT_NEAR(filter->GetMeanSSIM(), 0.7550069937, 5e-3);
 }
@@ -601,6 +638,7 @@ TEST(StructuralSimilarityImageFilter, ThreeDimensional_ConstantInputs_AnalyticMa
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(Filter3DType::ScaleWeightsType(1, 1.0));
   filter->Update();
   EXPECT_NEAR(filter->GetMeanSSIM(), AnalyticConstantSSIM(80.0, 120.0), 1e-9);
 }
@@ -625,6 +663,7 @@ TEST(StructuralSimilarityImageFilter, FourDimensional_ConstantInputs_AnalyticMat
   filter->SetInput1(a);
   filter->SetInput2(b);
   filter->SetDynamicRange(255.0);
+  filter->SetScaleWeights(Filter4DType::ScaleWeightsType(1, 1.0));
   filter->Update();
   EXPECT_NEAR(filter->GetMeanSSIM(), AnalyticConstantSSIM(60.0, 80.0), 1e-9);
 }
@@ -674,5 +713,59 @@ TEST(StructuralSimilarityImageFilter, UnsignedCharPixelType_IdenticalYieldsOne)
   filter->SetInput1(image);
   filter->SetInput2(image);
   filter->Update();
+  EXPECT_NEAR(filter->GetMeanSSIM(), 1.0, 1e-9);
+}
+
+
+// ===========================================================================
+// Real test images, cross-checked against a Python reference implementation
+// ===========================================================================
+
+TEST(StructuralSimilarityImageFilter, RealImages_Cthead1PngVsJpg_PythonReference)
+{
+  itk::PNGImageIOFactory::RegisterOneFactory();
+  itk::JPEGImageIOFactory::RegisterOneFactory();
+
+  auto png = ReadImageAsDouble(TOSTRING(CTHEAD1_PNG_INPUT));
+  auto jpg = ReadImageAsDouble(TOSTRING(CTHEAD1_JPG_INPUT));
+  ASSERT_EQ(png->GetLargestPossibleRegion(), jpg->GetLargestPossibleRegion());
+
+  auto filter = FilterType::New();
+  filter->SetInput1(png);
+  filter->SetInput2(jpg);
+  filter->SetDynamicRange(255.0);
+  filter->Update();
+
+  EXPECT_NEAR(filter->GetMeanSSIM(), 0.9999449253082275, 1e-3);
+}
+
+TEST(StructuralSimilarityImageFilter, RealImages_Cthead1PngVsCC_PythonReference)
+{
+  itk::PNGImageIOFactory::RegisterOneFactory();
+
+  auto png = ReadImageAsDouble(TOSTRING(CTHEAD1_PNG_INPUT));
+  auto cc = ReadImageAsDouble(TOSTRING(CTHEAD1_PNG_CC));
+  ASSERT_EQ(png->GetLargestPossibleRegion(), cc->GetLargestPossibleRegion());
+
+  auto filter = FilterType::New();
+  filter->SetInput1(png);
+  filter->SetInput2(cc);
+  filter->SetDynamicRange(255.0);
+  filter->Update();
+
+  EXPECT_NEAR(filter->GetMeanSSIM(), 0.010208729654550552, 1e-3);
+}
+
+TEST(StructuralSimilarityImageFilter, RealImages_Cthead1PngVsItself_YieldsOne)
+{
+  itk::PNGImageIOFactory::RegisterOneFactory();
+  auto png = ReadImageAsDouble(TOSTRING(CTHEAD1_PNG_INPUT));
+
+  auto filter = FilterType::New();
+  filter->SetInput1(png);
+  filter->SetInput2(png);
+  filter->SetDynamicRange(255.0);
+  filter->Update();
+
   EXPECT_NEAR(filter->GetMeanSSIM(), 1.0, 1e-9);
 }

@@ -96,14 +96,39 @@ namespace itk
  * - \c ScaleWeights: array of per-scale weights for multi-scale SSIM
  *   (MS-SSIM, \cite wang2003multiscale).  When the array contains a single
  *   element (the default), the filter computes ordinary single-scale SSIM.
- *   Multi-scale evaluation with more than one scale is not yet implemented
- *   and will raise an exception in BeforeGenerate.
+ *
+ * \par Multi-Scale SSIM (MS-SSIM)
+ * When \c ScaleWeights contains more than one element, the filter computes
+ * MS-SSIM \cite wang2003multiscale.  Both images are iteratively low-pass
+ * filtered and downsampled by a factor of 2 (via local 2x2...2 block
+ * averaging), producing a sequence of \f$M\f$ scales, from the finest
+ * (scale 1, the original resolution) to the coarsest (scale \f$M\f$).  At
+ * every scale \f$j\f$ the contrast \f$c_j\f$ and structure \f$s_j\f$
+ * comparisons are computed, but the luminance comparison \f$l_M\f$ is only
+ * evaluated once, at the coarsest scale, since luminance differences are
+ * already captured by the low-pass filtering used to reach coarser scales.
+ * The overall index is the weighted product
+ * \f[
+ *   \mathrm{MS\mbox{-}SSIM}(x,y) = [l_M(x,y)]^{\alpha}
+ *     \prod_{j=1}^{M} \big([c_j(x,y)]^{\beta}\,[s_j(x,y)]^{\gamma}\big)^{w_j}
+ * \f]
+ * where \f$w_j\f$ is the j-th element of \c ScaleWeights.  A typical
+ * 5-scale weight vector (\cite wang2003multiscale) is
+ * \f$(0.0448,\ 0.2856,\ 0.3001,\ 0.2363,\ 0.1333)\f$. It can be obtained
+ * from a normalized 1D Gaussian kernel of standard deviation 1.
+ * It is the default for this class.
+ * \c GetMeanSSIM() returns this scalar MS-SSIM value when multiple scales
+ * are used (default).  The per-pixel output image always reports the ordinary
+ * single-scale SSIM map computed at the finest (original) resolution; there
+ * is no standard per-pixel MS-SSIM map since coarser scales have lower
+ * resolution.
  *
  * The filter is N-dimensional, multi-threaded, and templated over the input
  * and output image types.  The output pixel type defaults to \c float.
  *
  * \sa SimilarityIndexImageFilter
  * \sa DiscreteGaussianImageFilter
+ * \sa BinShrinkImageFilter
  *
  * \ingroup MultiThreaded
  * \ingroup StructuralSimilarity
@@ -220,17 +245,22 @@ public:
   /** @ITKEndGrouping */
 
   /** Per-scale weights for multi-scale SSIM (MS-SSIM).  An array of size 1
-   *  (the default) requests ordinary single-scale SSIM and is the only
-   *  configuration currently supported.  Setting an array of length greater
-   *  than 1 will currently raise an exception in BeforeGenerate. */
+   *  (the default) requests ordinary single-scale SSIM.  An array of length
+   *  greater than 1 requests MS-SSIM: the images are progressively
+   *  downsampled by a factor of 2 between scales, contrast and structure are
+   *  compared at every scale, and luminance is compared only at the
+   *  coarsest (last) scale.  See the class documentation for the combining
+   *  formula.  A typical 5-element weight vector is
+   *  \f$(0.0448,\ 0.2856,\ 0.3001,\ 0.2363,\ 0.1333)\f$. */
   /** @ITKStartGrouping */
   void
   SetScaleWeights(const ScaleWeightsType & weights);
   itkGetConstReferenceMacro(ScaleWeights, ScaleWeightsType);
   /** @ITKEndGrouping */
 
-  /** Mean SSIM over the valid (non-Gaussian-padded) region.  Available
-   *  after Update(). */
+  /** Mean (MS-)SSIM over the valid (non-Gaussian-padded) region.  When
+   *  ScaleWeights has more than one element, this is the multi-scale SSIM
+   *  (MS-SSIM) value.  Available after Update(). */
   itkGetConstMacro(MeanSSIM, double);
 
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
@@ -282,7 +312,7 @@ private:
   double m_ContrastExponent{ 1.0 };
   double m_StructureExponent{ 1.0 };
 
-  ScaleWeightsType m_ScaleWeights{ 1, static_cast<RealType>(1.0) };
+  ScaleWeightsType m_ScaleWeights;
 
   double m_MeanSSIM{ 0.0 };
 };
